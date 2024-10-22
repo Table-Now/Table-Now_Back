@@ -11,7 +11,12 @@ public interface UserService {
     boolean emailAuth(String userId, String authKey);
 
     //로그인
-    void login(LoginDto loginDto);
+    LoginDto login(LoginDto loginDto);
+
+
+
+
+
 
 
     

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import zerobase.tableNow.components.MailComponents;
 import zerobase.tableNow.domain.constant.Status;
+import zerobase.tableNow.domain.token.TokenProvider;
 import zerobase.tableNow.domain.user.dto.LoginDto;
 import zerobase.tableNow.domain.user.dto.RegisterDto;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final MailComponents mailComponents;
+    private final TokenProvider tokenProvider;
 
     //회원가입
     @Override
@@ -74,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     //로그인
     @Override
-    public void login(LoginDto loginDto) {
+    public LoginDto login(LoginDto loginDto) {
         UsersEntity user = userRepository.findByUserId(loginDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
 
@@ -85,6 +87,15 @@ public class UserServiceImpl implements UserService {
         if (!user.isEmailAuthYn()) {
             throw new RuntimeException("이메일 인증을 완료해주세요.");
         }
+
+        // 로그인 성공 시 JWT 토큰 생성
+        String accessToken = tokenProvider.generateAccessToken(loginDto);
+
+        LoginDto responseDto = userMapper.toLoginDto(user);
+
+        responseDto.setToken(accessToken);
+
+        return responseDto;
     }
 
 

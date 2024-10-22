@@ -51,7 +51,7 @@ public class UserMapper {
     public LoginDto toLoginDto(UsersEntity entity){
         return LoginDto.builder()
                 .userId(entity.getUserId())
-                .password(entity.getPassword())
+                .role(entity.getRole())
                 .build();
     }
 }

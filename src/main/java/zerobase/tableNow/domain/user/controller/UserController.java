@@ -46,10 +46,11 @@ public class UserController {
 
     //로그인
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         try {
-            userService.login(loginDto);
-            return ResponseEntity.ok("로그인 성공");
+            // 로그인 성공 시 JWT 토큰 포함된 LoginDto 반환
+            LoginDto responseDto = userService.login(loginDto);
+            return ResponseEntity.ok(responseDto);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("로그인 실패: " + e.getMessage());

@@ -1,6 +1,7 @@
 package zerobase.tableNow.domain.user.dto;
 
 import lombok.*;
+import zerobase.tableNow.domain.constant.Role;
 
 @Builder
 @NoArgsConstructor
@@ -10,4 +11,6 @@ import lombok.*;
 public class LoginDto {
     private String userId;
     private String password;
+    private String token;
+    private Role role;
 }
