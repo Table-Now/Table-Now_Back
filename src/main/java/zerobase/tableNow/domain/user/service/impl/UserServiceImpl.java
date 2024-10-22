@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import zerobase.tableNow.components.MailComponents;
 import zerobase.tableNow.domain.constant.Status;
+import zerobase.tableNow.domain.user.dto.LoginDto;
 import zerobase.tableNow.domain.user.dto.RegisterDto;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.mapper.UserMapper;
@@ -22,6 +23,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final MailComponents mailComponents;
+
+    //회원가입
     @Override
     public RegisterDto register(RegisterDto registerDto) {
         // 중복 체크
@@ -48,6 +51,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(savedEntity);
     }
 
+    //이메일인증
     @Transactional
     public boolean emailAuth(String userId, String authKey) {
         Optional<UsersEntity> optionalUser = userRepository.findByUserIdAndEmailAuthKey(userId, authKey);
@@ -67,5 +71,22 @@ public class UserServiceImpl implements UserService {
 
         return true;
     }
+
+    //로그인
+    @Override
+    public void login(LoginDto loginDto) {
+        UsersEntity user = userRepository.findByUserId(loginDto.getUserId())
+                .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
+
+        if (!loginDto.getPassword().equals(user.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        if (!user.isEmailAuthYn()) {
+            throw new RuntimeException("이메일 인증을 완료해주세요.");
+        }
+    }
+
+
 
 }
