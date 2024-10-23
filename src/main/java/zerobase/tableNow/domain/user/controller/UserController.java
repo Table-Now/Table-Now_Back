@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zerobase.tableNow.domain.user.dto.DeleteDto;
 import zerobase.tableNow.domain.user.dto.LoginDto;
 import zerobase.tableNow.domain.user.dto.RePasswordDto;
 import zerobase.tableNow.domain.user.dto.RegisterDto;
@@ -62,6 +63,12 @@ public class UserController {
     @PostMapping("/repassword")
     public ResponseEntity<String> rePassword(@RequestBody RePasswordDto rePasswordDto) {
         return ResponseEntity.ok().body(userService.rePassword(rePasswordDto));
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<DeleteDto> userDelete(@RequestParam(name = "userId") String userId ){
+
+        return ResponseEntity.ok().body(userService.userDelete(userId));
     }
 
 }

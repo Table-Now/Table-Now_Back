@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import zerobase.tableNow.components.MailComponents;
 import zerobase.tableNow.domain.constant.Status;
 import zerobase.tableNow.domain.token.TokenProvider;
+import zerobase.tableNow.domain.user.dto.DeleteDto;
 import zerobase.tableNow.domain.user.dto.LoginDto;
 import zerobase.tableNow.domain.user.dto.RePasswordDto;
 import zerobase.tableNow.domain.user.dto.RegisterDto;
@@ -123,5 +124,20 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
 
             return "Success";
+    }
+
+    //회원 탈퇴
+    @Override
+    public DeleteDto userDelete(String userId) {
+        Optional<UsersEntity> optionalUsers = userRepository.findByUserId(userId);
+        if (optionalUsers.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        UsersEntity user = optionalUsers.get();
+        user.setUserStatus(Status.STOP);
+        UsersEntity savedUser = userRepository.save(user);
+
+        return new DeleteDto(savedUser.getUserId(), savedUser.getRole());
     }
 }

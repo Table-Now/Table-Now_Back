@@ -2,6 +2,7 @@ package zerobase.tableNow.domain.store.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import zerobase.tableNow.domain.baseEntity.BaseEntity;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 
 @Builder
@@ -11,7 +12,7 @@ import zerobase.tableNow.domain.user.entity.UsersEntity;
 @Setter
 @Entity
 @Table(name = "store")
-public class StoreEntity {
+public class StoreEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

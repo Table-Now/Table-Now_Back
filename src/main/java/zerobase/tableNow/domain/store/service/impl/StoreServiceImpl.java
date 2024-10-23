@@ -11,7 +11,9 @@ import zerobase.tableNow.domain.store.service.StoreService;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,4 +41,14 @@ public class StoreServiceImpl implements StoreService {
 
         return storeMapper.toStoreDto(saveEntity);
     }
+
+    //모든 상점 목록
+    @Override
+    public List<StoreDto> getAllStores() {
+        List<StoreEntity> storeEntities = storeRepository.findAll();
+        return storeEntities.stream()
+                .map(storeMapper::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 }

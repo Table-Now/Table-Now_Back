@@ -3,18 +3,22 @@ package zerobase.tableNow.domain.store.dto;
 import lombok.*;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 
+import java.time.LocalDateTime;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class StoreDto {
-    private String userId;
-    private String storeName;
-    private String storeLocation;
-    private String storeImg;
-    private String storeContents;
+public class StoreDto{
+    private String userId; //상점 담당매니저
+    private String storeName;// 상점 이름
+    private String storeLocation; //상점 장소
+    private String storeImg; // 상점 이미지
+    private String storeContents; // 상점 소개요약
     private String storeOpen;
     private String storeClose;
-    private String storeWeekOff;
+    private String storeWeekOff; //상점 휴무날
+    private LocalDateTime createAt; //상점등록일
+    private LocalDateTime updateAt; //상점정보 업데이트일
 }

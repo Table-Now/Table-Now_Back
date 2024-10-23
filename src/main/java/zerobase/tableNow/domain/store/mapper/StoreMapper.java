@@ -1,11 +1,8 @@
 package zerobase.tableNow.domain.store.mapper;
 
 import org.springframework.stereotype.Component;
-import zerobase.tableNow.domain.constant.Status;
 import zerobase.tableNow.domain.store.dto.StoreDto;
 import zerobase.tableNow.domain.store.entity.StoreEntity;
-import zerobase.tableNow.domain.user.dto.LoginDto;
-import zerobase.tableNow.domain.user.dto.RegisterDto;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 
 import java.util.UUID;
@@ -41,4 +38,19 @@ public class StoreMapper {
                 .build();
     }
 
+    //상점 목록 Entity를 DTO로 변환
+    public StoreDto convertToDto(StoreEntity storeEntity) {
+        return StoreDto.builder()
+                .userId(storeEntity.getUserId().getUserId())
+                .storeName(storeEntity.getStoreName())
+                .storeLocation(storeEntity.getStoreLocation())
+                .storeImg(storeEntity.getStoreImg())
+                .storeContents(storeEntity.getStoreContents())
+                .storeOpen(storeEntity.getStoreOpen())
+                .storeClose(storeEntity.getStoreClose())
+                .storeWeekOff(storeEntity.getStoreWeekOff())
+                .createAt(storeEntity.getCreateAt())
+                .updateAt(storeEntity.getUpdateAt())
+                .build();
+    }
 }
