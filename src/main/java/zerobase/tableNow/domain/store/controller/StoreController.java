@@ -27,7 +27,8 @@ public class StoreController {
 
     // 상점 목록
     @GetMapping("list")
-    public ResponseEntity<List<StoreDto>> list() {
-        return ResponseEntity.ok().body(storeService.getAllStores());
+    public ResponseEntity<List<StoreDto>> list(
+            @RequestParam(name = "keyword", required = false) String keyword) {
+        return ResponseEntity.ok().body(storeService.getAllStores(keyword));
     }
 }

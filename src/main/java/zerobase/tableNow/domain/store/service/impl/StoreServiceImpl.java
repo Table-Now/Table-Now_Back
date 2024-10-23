@@ -42,10 +42,17 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.toStoreDto(saveEntity);
     }
 
-    //모든 상점 목록
+    //상점 목록
     @Override
-    public List<StoreDto> getAllStores() {
-        List<StoreEntity> storeEntities = storeRepository.findAll();
+    public List<StoreDto> getAllStores(String keyword) {
+        List<StoreEntity> storeEntities;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            storeEntities = storeRepository.findAll();
+        } else {
+            storeEntities = storeRepository.findByStoreNameContainingIgnoreCase(keyword.trim());
+        }
+
         return storeEntities.stream()
                 .map(storeMapper::convertToDto)
                 .collect(Collectors.toList());

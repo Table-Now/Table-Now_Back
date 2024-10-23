@@ -9,6 +9,6 @@ public interface  StoreService {
     StoreDto register(StoreDto storeDto);
 
     //모든 상점 목록
-    List<StoreDto> getAllStores();
+    List<StoreDto> getAllStores(String keyword);
 
 }

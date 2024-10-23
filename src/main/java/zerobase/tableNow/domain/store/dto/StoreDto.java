@@ -16,6 +16,7 @@ public class StoreDto{
     private String storeLocation; //상점 장소
     private String storeImg; // 상점 이미지
     private String storeContents; // 상점 소개요약
+    private Integer scope; // 별점순
     private String storeOpen;
     private String storeClose;
     private String storeWeekOff; //상점 휴무날
