@@ -46,6 +46,7 @@ public class StoreMapper {
                 .storeLocation(storeEntity.getStoreLocation())
                 .storeImg(storeEntity.getStoreImg())
                 .storeContents(storeEntity.getStoreContents())
+                .rating(storeEntity.getRating())
                 .storeOpen(storeEntity.getStoreOpen())
                 .storeClose(storeEntity.getStoreClose())
                 .storeWeekOff(storeEntity.getStoreWeekOff())

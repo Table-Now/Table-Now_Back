@@ -1,16 +1,13 @@
 package zerobase.tableNow.domain.store.controller;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zerobase.tableNow.domain.constant.SortType;
 import zerobase.tableNow.domain.store.dto.StoreDto;
-import zerobase.tableNow.domain.store.entity.StoreEntity;
-import zerobase.tableNow.domain.store.repository.StoreRepository;
 import zerobase.tableNow.domain.store.service.StoreService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,7 +25,12 @@ public class StoreController {
     // 상점 목록
     @GetMapping("list")
     public ResponseEntity<List<StoreDto>> list(
-            @RequestParam(name = "keyword", required = false) String keyword) {
-        return ResponseEntity.ok().body(storeService.getAllStores(keyword));
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "sortType", required = false) String sortType
+    ) {
+        return ResponseEntity.ok().body(
+                storeService.getAllStores(keyword,
+                        sortType != null ? SortType.valueOf(sortType) : null)
+        );
     }
 }

@@ -14,4 +14,14 @@ public interface StoreRepository extends JpaRepository<StoreEntity,Long> {
     Optional<StoreEntity> findByStoreName(String storeName);
 
     List<StoreEntity> findByStoreNameContainingIgnoreCase(String trim);
+
+//    List<StoreEntity> findByStoreNameContainingIgnoreCaseOrderByRatingDesc(String keyword);
+//    List<StoreEntity> findByStoreNameContainingIgnoreCaseOrderByRatingAsc(String keyword);
+//    List<StoreEntity> findByStoreNameContainingIgnoreCaseOrderByStoreNameAsc(String keyword);
+//    List<StoreEntity> findByStoreNameContainingIgnoreCaseOrderByStoreNameDesc(String keyword);
+//
+//    List<StoreEntity> findAllByOrderByRatingDesc();
+//    List<StoreEntity> findAllByOrderByRatingAsc();
+//    List<StoreEntity> findAllByOrderByStoreNameAsc();
+//    List<StoreEntity> findAllByOrderByStoreNameDesc();
 }

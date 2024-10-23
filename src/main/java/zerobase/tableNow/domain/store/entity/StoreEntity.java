@@ -24,7 +24,9 @@ public class StoreEntity extends BaseEntity {
     private String storeLocation;
     private String storeImg;
     private String storeContents;
-    private Integer scope; // 별점순
+
+    @Column(nullable = true)
+    private Integer rating = 0; // 별점
     private String storeOpen;
     private String storeClose;
     private String storeWeekOff;
