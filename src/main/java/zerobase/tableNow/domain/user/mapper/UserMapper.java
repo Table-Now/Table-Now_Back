@@ -1,5 +1,7 @@
 package zerobase.tableNow.domain.user.mapper;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import zerobase.tableNow.domain.constant.Role;
 import zerobase.tableNow.domain.constant.Status;
@@ -9,16 +11,20 @@ import zerobase.tableNow.domain.user.entity.UsersEntity;
 
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Component
 public class UserMapper {
+    private final PasswordEncoder passwordEncoder;
     //회원가입 DTO -> Entity
     public UsersEntity toEntity(RegisterDto dto) {
         Role userRole = dto.isManagerYn() ? Role.MANAGER : Role.USER;
 
+        String hashPassword = passwordEncoder.encode(dto.getPassword());
+
         return UsersEntity.builder()
                 .userId(dto.getUserId())
                 .name(dto.getName())
-                .password(dto.getPassword())
+                .password(hashPassword)
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .emailAuthYn(dto.isEmailAuthYn())

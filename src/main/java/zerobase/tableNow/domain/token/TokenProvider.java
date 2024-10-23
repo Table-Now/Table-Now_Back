@@ -45,6 +45,7 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     public String getUserIdFromJWT(String token) {
         return getClaims(token).get("userId", String.class);
     }

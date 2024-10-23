@@ -3,6 +3,7 @@ package zerobase.tableNow.domain.user.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zerobase.tableNow.components.MailComponents;
 import zerobase.tableNow.domain.constant.Status;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MailComponents mailComponents;
     private final TokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     //회원가입
     @Override
@@ -80,7 +82,7 @@ public class UserServiceImpl implements UserService {
         UsersEntity user = userRepository.findByUserId(loginDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
 
-        if (!loginDto.getPassword().equals(user.getPassword())) {
+        if (!passwordEncoder.matches(loginDto.getPassword(),user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
