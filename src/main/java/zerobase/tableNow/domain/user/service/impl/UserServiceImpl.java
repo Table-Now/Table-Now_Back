@@ -9,6 +9,7 @@ import zerobase.tableNow.components.MailComponents;
 import zerobase.tableNow.domain.constant.Status;
 import zerobase.tableNow.domain.token.TokenProvider;
 import zerobase.tableNow.domain.user.dto.LoginDto;
+import zerobase.tableNow.domain.user.dto.RePasswordDto;
 import zerobase.tableNow.domain.user.dto.RegisterDto;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.mapper.UserMapper;
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService {
         UsersEntity user = userRepository.findByUserId(loginDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
 
-        if (!passwordEncoder.matches(loginDto.getPassword(),user.getPassword())) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -100,6 +101,27 @@ public class UserServiceImpl implements UserService {
         return responseDto;
     }
 
+    //비밀번호 재설정
+    @Override
+    public String rePassword(RePasswordDto rePasswordDto) {
+            // 1. 사용자 확인 (userId로 유효성 검증)
+            Optional<UsersEntity> optionalUser = userRepository.findByUserId(rePasswordDto.getUserId());
 
+            // 유효성 검증: user가 존재하는지 확인
+            UsersEntity user = optionalUser.orElseThrow(() -> new RuntimeException("해당 사용자 정보를 찾을 수 없습니다."));
 
+            // 2. 이메일 검증
+            if (!rePasswordDto.getEmail().equals(user.getEmail())) {
+                throw new RuntimeException("이메일이 일치하지 않습니다.");
+            }
+
+            // 3. 비밀번호 암호화
+            String encodedPassword = passwordEncoder.encode(rePasswordDto.getRePassword());
+
+            // 4. 비밀번호 저장
+            user.setPassword(encodedPassword);
+            userRepository.save(user);
+
+            return "Success";
+    }
 }

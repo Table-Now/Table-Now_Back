@@ -1,6 +1,7 @@
 package zerobase.tableNow.domain.user.service;
 
 import zerobase.tableNow.domain.user.dto.LoginDto;
+import zerobase.tableNow.domain.user.dto.RePasswordDto;
 import zerobase.tableNow.domain.user.dto.RegisterDto;
 
 public interface UserService {
@@ -14,10 +15,6 @@ public interface UserService {
     LoginDto login(LoginDto loginDto);
 
 
-
-
-
-
-
-    
+    //비밀번호 재설정
+    String rePassword(RePasswordDto rePasswordDto);
 }

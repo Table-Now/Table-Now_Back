@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zerobase.tableNow.domain.user.dto.LoginDto;
+import zerobase.tableNow.domain.user.dto.RePasswordDto;
 import zerobase.tableNow.domain.user.dto.RegisterDto;
 import zerobase.tableNow.domain.user.service.UserService;
 
 import javax.naming.AuthenticationException;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -56,7 +58,11 @@ public class UserController {
                     .body("로그인 실패: " + e.getMessage());
         }
     }
-
+    //비밀번호 재설정
+    @PostMapping("/repassword")
+    public ResponseEntity<String> rePassword(@RequestBody RePasswordDto rePasswordDto) {
+        return ResponseEntity.ok().body(userService.rePassword(rePasswordDto));
+    }
 
 }
 
