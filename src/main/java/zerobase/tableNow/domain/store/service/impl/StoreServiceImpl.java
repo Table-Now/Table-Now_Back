@@ -12,6 +12,7 @@ import zerobase.tableNow.domain.store.service.StoreService;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +78,33 @@ public class StoreServiceImpl implements StoreService {
         return storeEntities.stream()
                 .map(storeMapper::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    //상점 수정
+    @Override
+    public StoreDto update(Long id, StoreDto storeDto) {
+        StoreEntity storeUpdate = storeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 상점이 없습니다"));
+
+
+        UsersEntity currentUser = storeUpdate.getUserId();
+
+        storeUpdate.setUserId(currentUser); // 기존 사용자 정보 유지
+        storeUpdate.setStoreName(storeDto.getStoreName());
+        storeUpdate.setStoreLocation(storeDto.getStoreLocation());
+        storeUpdate.setStoreImg(storeDto.getStoreImg());
+        storeUpdate.setStoreContents(storeDto.getStoreContents());
+        storeUpdate.setRating(storeDto.getRating());
+        storeUpdate.setStoreOpen(storeDto.getStoreOpen());
+        storeUpdate.setStoreClose(storeDto.getStoreClose());
+        storeUpdate.setStoreWeekOff(storeDto.getStoreWeekOff());
+        storeUpdate.setUpdateAt(LocalDateTime.now());
+
+
+        StoreEntity updatedStore = storeRepository.save(storeUpdate);
+
+
+        return storeMapper.convertToDto(updatedStore);
     }
 
     // Null 처리를 위한 헬퍼 메소드들

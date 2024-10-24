@@ -33,4 +33,12 @@ public class StoreController {
                         sortType != null ? SortType.valueOf(sortType) : null)
         );
     }
+
+    //상점 수정
+    @PutMapping("update")
+    public ResponseEntity<StoreDto> update(@RequestParam(name = "id") Long id ,
+                                           @RequestBody StoreDto storeDto){
+        return ResponseEntity.ok().body(storeService.update(id,storeDto));
+
+    }
 }
