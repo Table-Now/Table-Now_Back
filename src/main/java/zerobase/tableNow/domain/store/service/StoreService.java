@@ -17,4 +17,6 @@ public interface  StoreService {
     //상점 수정
     StoreDto update(Long id,StoreDto storeDto);
 
+    //상점 상세정보
+    StoreDto detail(Long id);
 }

@@ -107,6 +107,15 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.convertToDto(updatedStore);
     }
 
+    //상점 상세정보
+    @Override
+    public StoreDto detail(Long id) {
+        StoreEntity storeDetail = storeRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("해당 상점이 없습니다."));
+
+        return storeMapper.convertToDto(storeDetail);
+    }
+
     // Null 처리를 위한 헬퍼 메소드들
     private int compareRatings(Integer rating1, Integer rating2) {
         // null을 0으로 처리

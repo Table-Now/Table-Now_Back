@@ -41,4 +41,10 @@ public class StoreController {
         return ResponseEntity.ok().body(storeService.update(id,storeDto));
 
     }
+    //상점 상세정보
+    @GetMapping("detail")
+    public ResponseEntity<StoreDto> detail(@RequestParam(name = "id") Long id){
+        return ResponseEntity.ok().body(storeService.detail(id));
+
+    }
 }
