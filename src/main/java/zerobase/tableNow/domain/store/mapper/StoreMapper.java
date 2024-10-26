@@ -58,6 +58,7 @@ public class StoreMapper {
                 .updateAt(storeEntity.getUpdateAt())
                 .latitude(storeEntity.getLatitude())
                 .longitude(storeEntity.getLongitude())
+                .distance(storeEntity.getDistance())
                 .build();
     }
 }

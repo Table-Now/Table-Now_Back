@@ -34,4 +34,6 @@ public class StoreEntity extends BaseEntity {
     private double latitude;  // 위도 추가
     private double longitude; // 경도 추가
 
+    @Transient
+    private Double distance;
 }

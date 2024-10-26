@@ -26,11 +26,13 @@ public class StoreController {
     @GetMapping("list")
     public ResponseEntity<List<StoreDto>> list(
             @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "sortType", required = false) String sortType
+            @RequestParam(name = "sortType", required = false, defaultValue = "DISTANCE") String sortType,
+            @RequestParam(name = "userLat", required = false) Double userLat,
+            @RequestParam(name = "userLon", required = false) Double userLon
     ) {
+        SortType sortTypeEnum = sortType != null ? SortType.valueOf(sortType) : SortType.DISTANCE;
         return ResponseEntity.ok().body(
-                storeService.getAllStores(keyword,
-                        sortType != null ? SortType.valueOf(sortType) : null)
+                storeService.getAllStores(keyword, sortTypeEnum, userLat, userLon)
         );
     }
 

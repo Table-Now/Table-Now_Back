@@ -2,6 +2,7 @@ package zerobase.tableNow.domain.store.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import zerobase.tableNow.domain.constant.SortType;
 import zerobase.tableNow.domain.store.dto.StoreDto;
@@ -28,6 +29,7 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final StoreMapper storeMapper;
     private final LocationService locationService;
+
     //상점등록
     @Override
     public StoreDto register(StoreDto storeDto) {
@@ -50,41 +52,77 @@ public class StoreServiceImpl implements StoreService {
 
         return storeMapper.toStoreDto(saveEntity);
     }
-
     //상점 목록
     @Override
-    public List<StoreDto> getAllStores(String keyword, SortType sortType) {
+    public List<StoreDto> getAllStores(String keyword, SortType sortType, Double userLat, Double userLon) {
         List<StoreEntity> storeEntities;
 
-        // 1. 키워드 검색
+        // 기본 데이터 조회
         if (keyword != null && !keyword.trim().isEmpty()) {
             storeEntities = storeRepository.findByStoreNameContainingIgnoreCase(keyword.trim());
         } else {
             storeEntities = storeRepository.findAll();
         }
 
-        // 2. 정렬 적용 (정렬 타입이 있는 경우에만)
-        if (sortType != null) {
-            switch (sortType) {
-                case RATING_HIGH:
-                    storeEntities.sort((a, b) -> compareRatings(b.getRating(), a.getRating()));
-                    break;
-                case RATING_LOW:
-                    storeEntities.sort((a, b) -> compareRatings(a.getRating(), b.getRating()));
-                    break;
-                case NAME_ASC:
-                    storeEntities.sort((a, b) -> compareNames(a.getStoreName(), b.getStoreName()));
-                    break;
-                case NAME_DESC:
-                    storeEntities.sort((a, b) -> compareNames(b.getStoreName(), a.getStoreName()));
-                    break;
+        // 거리 계산 및 정렬
+        if (SortType.DISTANCE.equals(sortType) && userLat != null && userLon != null) {
+            // 각 상점의 거리를 계산하고 정렬
+            storeEntities.forEach(store -> {
+                double distance = calculateDistance(
+                        userLat, userLon,
+                        store.getLatitude(), store.getLongitude()
+                );
+                store.setDistance(distance);
+            });
+
+            // 거리순으로 정렬
+            storeEntities.sort(Comparator.comparingDouble(StoreEntity::getDistance));
+        } else {
+            // 다른 정렬 조건 적용
+            if (sortType != null) {
+                switch (sortType) {
+                    case RATING_HIGH:
+                        storeEntities.sort((a, b) -> compareRatings(b.getRating(), a.getRating()));
+                        break;
+                    case RATING_LOW:
+                        storeEntities.sort((a, b) -> compareRatings(a.getRating(), b.getRating()));
+                        break;
+                    case NAME_ASC:
+                        storeEntities.sort(Comparator.comparing(StoreEntity::getStoreName));
+                        break;
+                    case NAME_DESC:
+                        storeEntities.sort(Comparator.comparing(StoreEntity::getStoreName).reversed());
+                        break;
+                }
             }
         }
 
+        // DTO 변환 시 거리 정보도 포함
         return storeEntities.stream()
-                .map(storeMapper::convertToDto)
+                .map(entity -> {
+                    StoreDto dto = storeMapper.convertToDto(entity);
+                    dto.setDistance(entity.getDistance());
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
+
+    // 거리 계산 메서드 추가
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // 지구의 반경 (km)
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // 거리 (km)
+    }
+
 
     //상점 수정
     @Override

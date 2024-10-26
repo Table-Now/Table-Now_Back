@@ -24,4 +24,5 @@ public class StoreDto{
 
     private double latitude;  // 위도 추가
     private double longitude; // 경도 추가
+    private Double distance; // 거리 정보를 저장할 필드 추가
 }

@@ -12,7 +12,8 @@ public interface  StoreService {
     StoreDto register(StoreDto storeDto);
 
     //상점 목록
-    List<StoreDto> getAllStores(String keyword, SortType sortType);
+//    List<StoreDto> getAllStores(String keyword, SortType sortType);
+    List<StoreDto> getAllStores(String keyword, SortType sortTypeEnum, Double userLat, Double userLon);
 
     //상점 수정
     StoreDto update(Long id,StoreDto storeDto);
@@ -22,4 +23,6 @@ public interface  StoreService {
 
     //상점 삭제
     void delete(Long id);
+
+
 }
