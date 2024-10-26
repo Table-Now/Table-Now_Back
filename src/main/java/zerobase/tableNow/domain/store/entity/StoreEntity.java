@@ -31,4 +31,7 @@ public class StoreEntity extends BaseEntity {
     private String storeClose;
     private String storeWeekOff;
 
+    private double latitude;  // 위도 추가
+    private double longitude; // 경도 추가
+
 }

@@ -21,4 +21,7 @@ public class StoreDto{
     private String storeWeekOff; //상점 휴무날
     private LocalDateTime createAt; //상점등록일
     private LocalDateTime updateAt; //상점정보 업데이트일
+
+    private double latitude;  // 위도 추가
+    private double longitude; // 경도 추가
 }

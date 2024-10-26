@@ -8,6 +8,7 @@ import zerobase.tableNow.domain.store.dto.StoreDto;
 import zerobase.tableNow.domain.store.entity.StoreEntity;
 import zerobase.tableNow.domain.store.mapper.StoreMapper;
 import zerobase.tableNow.domain.store.repository.StoreRepository;
+import zerobase.tableNow.domain.store.service.LocationService;
 import zerobase.tableNow.domain.store.service.StoreService;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.repository.UserRepository;
@@ -26,6 +27,7 @@ public class StoreServiceImpl implements StoreService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final StoreMapper storeMapper;
+    private final LocationService locationService;
     //상점등록
     @Override
     public StoreDto register(StoreDto storeDto) {
@@ -37,6 +39,10 @@ public class StoreServiceImpl implements StoreService {
             log.info("해당 상점이 존재합니다.");
             throw new RuntimeException("해당 상점이 존재합니다.");
         }
+        // 주소를 위도, 경도로 변환
+        double[] coordinates = locationService.getCoordinates(storeDto.getStoreLocation());
+        storeDto.setLatitude(coordinates[0]);
+        storeDto.setLongitude(coordinates[1]);
 
         // DTO -> Entity 변환 및 저장
         StoreEntity storeEntity = storeMapper.toStoreEntity(storeDto, optionalUsers);

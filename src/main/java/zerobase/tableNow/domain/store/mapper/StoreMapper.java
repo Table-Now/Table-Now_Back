@@ -20,6 +20,8 @@ public class StoreMapper {
                 .storeOpen(storeDto.getStoreOpen())
                 .storeClose(storeDto.getStoreClose())
                 .storeWeekOff(storeDto.getStoreWeekOff())
+                .latitude(storeDto.getLatitude())
+                .longitude(storeDto.getLongitude())
                 .build();
 
     }
@@ -35,6 +37,8 @@ public class StoreMapper {
                 .storeOpen(storeEntity.getStoreOpen())
                 .storeClose(storeEntity.getStoreClose())
                 .storeWeekOff(storeEntity.getStoreWeekOff())
+                .latitude(storeEntity.getLatitude())
+                .longitude(storeEntity.getLongitude())
                 .build();
     }
 
@@ -52,6 +56,8 @@ public class StoreMapper {
                 .storeWeekOff(storeEntity.getStoreWeekOff())
                 .createAt(storeEntity.getCreateAt())
                 .updateAt(storeEntity.getUpdateAt())
+                .latitude(storeEntity.getLatitude())
+                .longitude(storeEntity.getLongitude())
                 .build();
     }
 }
