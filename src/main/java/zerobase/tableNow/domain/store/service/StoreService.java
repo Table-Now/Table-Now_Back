@@ -11,7 +11,7 @@ public interface  StoreService {
     //상점 등록
     StoreDto register(StoreDto storeDto);
 
-    //모든 상점 목록
+    //상점 목록
     List<StoreDto> getAllStores(String keyword, SortType sortType);
 
     //상점 수정
@@ -19,4 +19,7 @@ public interface  StoreService {
 
     //상점 상세정보
     StoreDto detail(Long id);
+
+    //상점 삭제
+    void delete(Long id);
 }

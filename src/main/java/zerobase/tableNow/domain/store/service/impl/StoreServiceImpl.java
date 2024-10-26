@@ -116,6 +116,12 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.convertToDto(storeDetail);
     }
 
+    //상점 삭제
+    @Override
+    public void delete(Long id) {
+        storeRepository.deleteById(id);
+    }
+
     // Null 처리를 위한 헬퍼 메소드들
     private int compareRatings(Integer rating1, Integer rating2) {
         // null을 0으로 처리

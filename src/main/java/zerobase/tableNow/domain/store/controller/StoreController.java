@@ -47,4 +47,10 @@ public class StoreController {
         return ResponseEntity.ok().body(storeService.detail(id));
 
     }
+    //상점 삭제
+    @DeleteMapping("delete")
+    public ResponseEntity<Void> delete(@RequestParam(name = "id") Long id) {
+        storeService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
