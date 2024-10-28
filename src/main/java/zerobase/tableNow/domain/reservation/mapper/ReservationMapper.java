@@ -17,9 +17,9 @@ public class ReservationMapper {
                 .userId(optionalUsers)
                 .phone(optionalUsers.getPhone())
                 .storeName(optionalStore)
-                .reserDate(reservationDto.getReserDate())
+                .reserDateTime(reservationDto.getReserDateTime())
                 .peopleNb(reservationDto.getPeopleNb())
-                .reserCheck(reservationDto.getReserCheck())
+                .reserCheck(false)
                 .reservationStatus(Status.REQ)
                 .build();
 
@@ -29,7 +29,7 @@ public class ReservationMapper {
                 .userId(reservationEntity.getUserId().getUserId())
                 .phone(reservationEntity.getPhone())
                 .storeName(reservationEntity.getStoreName().getStoreName())
-                .reserDate(reservationEntity.getReserDate())
+                .reserDateTime(reservationEntity.getReserDateTime())
                 .peopleNb(reservationEntity.getPeopleNb())
                 .reserCheck(reservationEntity.getReserCheck())
                 .reservationStatus(reservationEntity.getReservationStatus())

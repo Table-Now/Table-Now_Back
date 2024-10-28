@@ -7,6 +7,8 @@ import zerobase.tableNow.domain.constant.Status;
 import zerobase.tableNow.domain.store.entity.StoreEntity;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 
+import java.time.LocalDateTime;
+
 
 @Builder
 @AllArgsConstructor
@@ -28,10 +30,12 @@ public class ReservationEntity extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storeName")
     private StoreEntity storeName; //상점이름
-    private String reserDate; // 예약날짜
+    private LocalDateTime reserDateTime;//예약 날짜, 시간
     private Integer peopleNb; // 예약인원
 
     private Boolean reserCheck; //예약 10분전 체크
+
+    @Enumerated(EnumType.STRING)
     private Status reservationStatus; //이용가능한 상태, 정지상태
 
 }
