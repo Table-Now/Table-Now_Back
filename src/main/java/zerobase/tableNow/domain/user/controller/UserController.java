@@ -21,7 +21,12 @@ import java.util.Optional;
 @RequestMapping("/user/")
 public class UserController {
     private  final UserService userService;
-    //회원가입
+
+    /**
+     * 회원 가입
+     * @param registerDto 회원가입 요청 데이터
+     * @return 회원 정보
+     */
     @PostMapping("register")
     public ResponseEntity<RegisterDto> register(
             @RequestBody RegisterDto registerDto){
@@ -29,6 +34,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.register(registerDto));
     }
 
+    // 이메일 인증
     @GetMapping("email-auth")
     public ResponseEntity<?> emailAuth(@RequestParam("id") String userId,
                                        @RequestParam("key") String authKey) {
@@ -59,12 +65,14 @@ public class UserController {
                     .body("로그인 실패: " + e.getMessage());
         }
     }
+
     //비밀번호 재설정
     @PostMapping("/repassword")
     public ResponseEntity<String> rePassword(@RequestBody RePasswordDto rePasswordDto) {
         return ResponseEntity.ok().body(userService.rePassword(rePasswordDto));
     }
 
+    //회원 정지
     @DeleteMapping("delete")
     public ResponseEntity<DeleteDto> userDelete(@RequestParam(name = "userId") String userId ){
 

@@ -33,6 +33,7 @@ public class StoreServiceImpl implements StoreService {
     //상점등록
     @Override
     public StoreDto register(StoreDto storeDto) {
+
         UsersEntity optionalUsers = userRepository.findByUserId(storeDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
         Optional<StoreEntity> optionalStoreEntity = storeRepository.findByStoreName(storeDto.getStoreName());
@@ -52,6 +53,7 @@ public class StoreServiceImpl implements StoreService {
 
         return storeMapper.toStoreDto(saveEntity);
     }
+
     //상점 목록
     @Override
     public List<StoreDto> getAllStores(String keyword, SortType sortType, Double userLat, Double userLon) {

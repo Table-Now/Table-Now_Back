@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import zerobase.tableNow.domain.store.dto.KakaoApiResponse;
 
 @Service
-public class LocationService {
+public class LocationService { //카카오 API 활용
 
     private final WebClient webClient;
 
