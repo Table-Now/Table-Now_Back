@@ -10,7 +10,7 @@ public interface ManagerService {
     List<ManagerDto> managerList(ManagerDto managerDto);
 
     //예약 정보 확인
-    List<ConfirmDto> confirmList(String storeName);
+    List<ConfirmDto> confirmList(String store);
 
 
 

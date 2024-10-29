@@ -14,24 +14,22 @@ public class ReservationMapper {
                                            StoreEntity optionalStore){
         //예약 요청 DTO -> Entity
         return ReservationEntity.builder()
-                .userId(optionalUsers)
+                .user(optionalUsers)
                 .phone(optionalUsers.getPhone())
-                .storeName(optionalStore)
+                .store(optionalStore)
                 .reserDateTime(reservationDto.getReserDateTime())
                 .peopleNb(reservationDto.getPeopleNb())
-                .reserCheck(false)
                 .reservationStatus(Status.REQ)
                 .build();
 
     }
     public ReservationDto toReserDto(ReservationEntity reservationEntity){
         return ReservationDto.builder()
-                .userId(reservationEntity.getUserId().getUserId())
+                .userId(reservationEntity.getUser().getUserId())
                 .phone(reservationEntity.getPhone())
-                .storeName(reservationEntity.getStoreName().getStoreName())
+                .store(reservationEntity.getStore().getStore())
                 .reserDateTime(reservationEntity.getReserDateTime())
                 .peopleNb(reservationEntity.getPeopleNb())
-                .reserCheck(reservationEntity.getReserCheck())
                 .reservationStatus(reservationEntity.getReservationStatus())
                 .build();
     }

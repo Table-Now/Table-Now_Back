@@ -5,15 +5,13 @@ import zerobase.tableNow.domain.store.dto.StoreDto;
 import zerobase.tableNow.domain.store.entity.StoreEntity;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 
-import java.util.UUID;
-
 @Component
 public class StoreMapper {
     public StoreEntity toStoreEntity(StoreDto storeDto, UsersEntity optionalUsers) {
         //상점등록 DTO -> Entity
         return StoreEntity.builder()
                 .userId(optionalUsers)
-                .storeName(storeDto.getStoreName())
+                .store(storeDto.getStore())
                 .storeLocation(storeDto.getStoreLocation())
                 .storeImg(storeDto.getStoreImg())
                 .storeContents(storeDto.getStoreContents())
@@ -30,7 +28,7 @@ public class StoreMapper {
     public StoreDto toStoreDto(StoreEntity storeEntity) {
         return StoreDto.builder()
                 .userId(storeEntity.getUserId().getUserId())
-                .storeName(storeEntity.getStoreName())
+                .store(storeEntity.getStore())
                 .storeLocation(storeEntity.getStoreLocation())
                 .storeImg(storeEntity.getStoreImg())
                 .storeContents(storeEntity.getStoreContents())
@@ -46,7 +44,7 @@ public class StoreMapper {
     public StoreDto convertToDto(StoreEntity storeEntity) {
         return StoreDto.builder()
                 .userId(storeEntity.getUserId().getUserId())
-                .storeName(storeEntity.getStoreName())
+                .store(storeEntity.getStore())
                 .storeLocation(storeEntity.getStoreLocation())
                 .storeImg(storeEntity.getStoreImg())
                 .storeContents(storeEntity.getStoreContents())

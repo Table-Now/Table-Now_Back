@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 public class StoreDto{
     private String userId; //상점 담당매니저
-    private String storeName;// 상점 이름
+    private String store;// 상점 이름
     private String storeLocation; //상점 장소
     private String storeImg; // 상점 이미지
     private String storeContents; // 상점 소개요약

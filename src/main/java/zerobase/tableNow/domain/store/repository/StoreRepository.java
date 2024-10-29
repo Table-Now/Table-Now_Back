@@ -16,10 +16,8 @@ public interface StoreRepository extends JpaRepository<StoreEntity,Long> {
     //매니저전용 상점 목록
     List<StoreEntity> findByUserId(UsersEntity userId);
 
+    Optional<StoreEntity> findByStore(String store);
 
-    Optional<StoreEntity> findByStoreName(String storeName);
-
-    List<StoreEntity> findByStoreNameContainingIgnoreCase(String keyword);
-
+    List<StoreEntity> findByStoreContainingIgnoreCase(String keyword);
 }
 

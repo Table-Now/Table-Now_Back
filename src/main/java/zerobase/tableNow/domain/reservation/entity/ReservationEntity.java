@@ -24,18 +24,17 @@ public class ReservationEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UsersEntity userId;
+    private UsersEntity user;
     private String phone;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeName")
-    private StoreEntity storeName; //상점이름
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private StoreEntity store; //상점이름
+
     private LocalDateTime reserDateTime;//예약 날짜, 시간
     private Integer peopleNb; // 예약인원
 
-    private Boolean reserCheck; //예약 10분전 체크
-
     @Enumerated(EnumType.STRING)
-    private Status reservationStatus; //이용가능한 상태, 정지상태
+    private Status reservationStatus; //예약 10분전 체크
 
 }

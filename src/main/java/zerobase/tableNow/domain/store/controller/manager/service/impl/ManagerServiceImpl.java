@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import zerobase.tableNow.domain.constant.Status;
 import zerobase.tableNow.domain.reservation.entity.ReservationEntity;
-import zerobase.tableNow.domain.reservation.repository.ReservationRepository;
 import zerobase.tableNow.domain.store.controller.manager.dto.ConfirmDto;
 import zerobase.tableNow.domain.store.controller.manager.dto.ManagerDto;
 import zerobase.tableNow.domain.store.controller.manager.repository.ManagerRepository;
@@ -14,6 +13,7 @@ import zerobase.tableNow.domain.store.repository.StoreRepository;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.repository.UserRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,7 @@ public class ManagerServiceImpl implements ManagerService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
 
-    //매니져전용 상점 목록
+    //매니저전용 상점 목록
     @Override
     public List<ManagerDto> managerList(ManagerDto managerDto) {
         UsersEntity user = userRepository.findByUserId(managerDto.getUserId())
@@ -36,7 +36,7 @@ public class ManagerServiceImpl implements ManagerService {
         // 조회된 상점 목록을 ManagerDto 리스트로 변환
         return storeEntities.stream().map(store -> ManagerDto.builder()
                 .userId(user.getUserId())
-                .storeName(store.getStoreName())
+                .store(store.getStore())
                 .storeLocation(store.getStoreLocation())
                 .storeImg(store.getStoreImg())
                 .storeContents(store.getStoreContents())
@@ -50,12 +50,14 @@ public class ManagerServiceImpl implements ManagerService {
 
     //매니저전용 예약정보 확인
     @Override
-    public List<ConfirmDto> confirmList(String storeName) {
-        List<ReservationEntity> reservations = managerRepository.findByStoreName_StoreNameAndReservationStatus(storeName, Status.ING);
+    public List<ConfirmDto> confirmList(String store) {
+        List<ReservationEntity> reservations = managerRepository.findByStore_StoreAndReservationStatus(store, Status.ING);
 
+        // 예약 날짜와 시간을 기준으로 오름차순 정렬
         return reservations.stream()
+                .sorted(Comparator.comparing(ReservationEntity::getReserDateTime))
                 .map(reservation -> ConfirmDto.builder()
-                        .storeName(reservation.getStoreName().getStoreName())
+                        .store(reservation.getStore().getStore())
                         .phone(reservation.getPhone())
                         .reserDateTime(reservation.getReserDateTime())
                         .peopleNb(reservation.getPeopleNb())

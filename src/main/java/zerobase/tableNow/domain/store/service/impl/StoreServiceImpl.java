@@ -2,7 +2,6 @@ package zerobase.tableNow.domain.store.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import zerobase.tableNow.domain.constant.SortType;
 import zerobase.tableNow.domain.store.dto.StoreDto;
@@ -36,7 +35,7 @@ public class StoreServiceImpl implements StoreService {
 
         UsersEntity optionalUsers = userRepository.findByUserId(storeDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
-        Optional<StoreEntity> optionalStoreEntity = storeRepository.findByStoreName(storeDto.getStoreName());
+        Optional<StoreEntity> optionalStoreEntity = storeRepository.findByStore(storeDto.getStore());
 
         if (optionalStoreEntity.isPresent()){
             log.info("해당 상점이 존재합니다.");
@@ -61,7 +60,7 @@ public class StoreServiceImpl implements StoreService {
 
         // 기본 데이터 조회
         if (keyword != null && !keyword.trim().isEmpty()) {
-            storeEntities = storeRepository.findByStoreNameContainingIgnoreCase(keyword.trim());
+            storeEntities = storeRepository.findByStoreContainingIgnoreCase(keyword.trim());
         } else {
             storeEntities = storeRepository.findAll();
         }
@@ -90,10 +89,10 @@ public class StoreServiceImpl implements StoreService {
                         storeEntities.sort((a, b) -> compareRatings(a.getRating(), b.getRating()));
                         break;
                     case NAME_ASC:
-                        storeEntities.sort(Comparator.comparing(StoreEntity::getStoreName));
+                        storeEntities.sort(Comparator.comparing(StoreEntity::getStore));
                         break;
                     case NAME_DESC:
-                        storeEntities.sort(Comparator.comparing(StoreEntity::getStoreName).reversed());
+                        storeEntities.sort(Comparator.comparing(StoreEntity::getStore).reversed());
                         break;
                 }
             }
@@ -136,7 +135,7 @@ public class StoreServiceImpl implements StoreService {
         UsersEntity currentUser = storeUpdate.getUserId();
 
         storeUpdate.setUserId(currentUser); // 기존 사용자 정보 유지
-        storeUpdate.setStoreName(storeDto.getStoreName());
+        storeUpdate.setStore(storeDto.getStore());
         storeUpdate.setStoreLocation(storeDto.getStoreLocation());
         storeUpdate.setStoreImg(storeDto.getStoreImg());
         storeUpdate.setStoreContents(storeDto.getStoreContents());

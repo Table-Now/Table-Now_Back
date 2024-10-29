@@ -1,6 +1,5 @@
 package zerobase.tableNow.domain.store.controller.manager.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 @Builder
@@ -12,7 +11,7 @@ public class ManagerDto {
     private String userId;
     private String phone;
 
-    private String storeName;
+    private String store;
     private String storeLocation;
     private String storeImg;
     private String storeContents;
