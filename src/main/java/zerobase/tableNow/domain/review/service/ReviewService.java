@@ -11,11 +11,14 @@ public interface ReviewService {
     ReviewDto register(String store, ReviewDto reviewDto);
 
     //리뷰 목록
-    List<ReviewDto> list();
+    List<ReviewDto> listByStore(String store);
 
     //리뷰 수정
     UpdateDto update(String user, ReviewDto reviewDto);
 
     //리뷰 삭제
-    void delete(String user);
+    void delete(String user,Long id);
+
+
+
 }

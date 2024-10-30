@@ -3,7 +3,9 @@ package zerobase.tableNow.domain.review.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import zerobase.tableNow.domain.constant.Role;
 import zerobase.tableNow.domain.constant.Status;
 import zerobase.tableNow.domain.reservation.repository.ReservationRepository;
 import zerobase.tableNow.domain.review.dto.ReviewDto;
@@ -67,15 +69,14 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewMapper.toReviewDto(savedEntity);
     }
 
-
     /**
-     * 리뷰 목록 조회
-     *
+     * 리뷰 목록
+     * @param store
      * @return 리뷰 목록
      */
     @Override
-    public List<ReviewDto> list() {
-        List<ReviewEntity> reviewEntities = reviewRepository.findAllByOrderByCreateAtDesc();
+    public List<ReviewDto> listByStore(String store) {
+        List<ReviewEntity> reviewEntities = reviewRepository.findAllByStoreOrderByCreateAtDesc(store);
         return reviewEntities.stream()
                 .map(reviewMapper::toReviewDto)
                 .collect(Collectors.toList());
@@ -97,6 +98,10 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewEntity existingReview = reviewRepository.findByUser(users)
                 .orElseThrow(() -> new RuntimeException("해당 리뷰가 없습니다."));
 
+        // 리뷰 작성자와 현재 사용자가 일치하는지 확인
+        if (!existingReview.getUser().getUser().equals(user)) {
+            throw new RuntimeException("리뷰 작성자만 수정할 수 있습니다.");
+        }
 
         // 기존 리뷰 엔티티 업데이트
         existingReview.setStore(reviewDto.getStore());
@@ -115,14 +120,28 @@ public class ReviewServiceImpl implements ReviewService {
      * @param user 사용자 ID
      */
     @Override
-    public void delete(String user) {
-        UsersEntity users = userRepository.findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("Review with user id " + user + " not found"));
+    public void delete(String user, Long id) {
+        // 1. 현재 로그인한 사용자 정보 조회
+        UsersEntity currentUser = userRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("아이디 " + user + "를 가진 사용자를 찾을 수 없습니다."));
 
-        if (reviewRepository.existsByUser(users)) {
-            reviewRepository.deleteByUser(users);
-        } else {
-            throw new EntityNotFoundException("Review with user id " + users + " not found");
+        // 2. 특정 리뷰 ID로 리뷰 조회
+        ReviewEntity review = reviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 리뷰를 찾을 수 없습니다."));
+
+        // 3. 권한 확인
+        boolean isReviewAuthor = review.getUser().getUser().equals(user);
+        boolean isManager = currentUser.getRole() == Role.MANAGER;
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+
+        // 4. 리뷰 작성자 확인 및 권한 검증
+        if (!isReviewAuthor && !isManager && !isAdmin) {
+            throw new AccessDeniedException("이 리뷰를 삭제할 권한이 없습니다.");
         }
+
+        // 5. 리뷰 삭제
+        reviewRepository.delete(review);
     }
+
 }
+

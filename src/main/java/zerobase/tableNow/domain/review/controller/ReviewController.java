@@ -24,8 +24,9 @@ public class ReviewController {
 
     // 리뷰 목록 조회
     @GetMapping("list")
-    public ResponseEntity<List<ReviewDto>> list(){
-        return ResponseEntity.ok().body(reviewService.list());
+    public ResponseEntity<List<ReviewDto>> list(@RequestParam(name = "store") String store){
+        return ResponseEntity.ok().body(reviewService.listByStore(store));
+
     }
 
     // 리뷰 수정
@@ -37,8 +38,9 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping("delete")
-    public ResponseEntity<?> delete(@RequestParam(name = "user") String user){
-        reviewService.delete(user);
+    public ResponseEntity<?> delete(@RequestParam(name = "user") String user,
+                                    @RequestParam(name = "id")Long id){
+        reviewService.delete(user,id);
         return ResponseEntity.noContent().build();
     }
 }

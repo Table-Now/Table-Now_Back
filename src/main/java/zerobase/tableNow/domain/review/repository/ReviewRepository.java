@@ -13,13 +13,9 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
     // 리뷰 목록 조회
-    List<ReviewEntity> findAllByOrderByCreateAtDesc();
+    List<ReviewEntity> findAllByStoreOrderByCreateAtDesc(String store);
 
     // 리뷰 수정 (리뷰가 있는지)
     Optional<ReviewEntity> findByUser(UsersEntity user);
-
-    void deleteByUser(UsersEntity user);
-
     boolean existsByUser(UsersEntity user);
-
 }
