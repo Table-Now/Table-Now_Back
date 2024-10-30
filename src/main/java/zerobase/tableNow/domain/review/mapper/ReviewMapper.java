@@ -13,7 +13,7 @@ public class ReviewMapper {
     public ReviewEntity toReviewEntity(ReviewDto reviewDto ,
                                        UsersEntity optionalUsers){
         return ReviewEntity.builder()
-                .userId(optionalUsers.getUserId())
+                .user(optionalUsers)
                 .store(reviewDto.getStore())
                 .contents(reviewDto.getContents())
                 .role(reviewDto.getRole())
@@ -23,7 +23,7 @@ public class ReviewMapper {
     //리뷰 등록 Entity -> Dto
     public ReviewDto toReviewDto(ReviewEntity reviewEntity){
         return ReviewDto.builder()
-                .userId(reviewEntity.getUserId())
+                .user(reviewEntity.getUser().getUser())
                 .store(reviewEntity.getStore())
                 .contents(reviewEntity.getContents())
                 .role(reviewEntity.getRole())
@@ -33,7 +33,7 @@ public class ReviewMapper {
     //리뷰 수정
     public UpdateDto toUpdateDto(ReviewEntity reviewEntity){
         return UpdateDto.builder()
-                .userId(reviewEntity.getUserId())
+                .user(reviewEntity.getUser().getUser())
                 .store(reviewEntity.getStore())
                 .contents(reviewEntity.getContents())
                 .build();

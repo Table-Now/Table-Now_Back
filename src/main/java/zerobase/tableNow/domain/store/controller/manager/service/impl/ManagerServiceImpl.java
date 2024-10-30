@@ -27,15 +27,15 @@ public class ManagerServiceImpl implements ManagerService {
     //매니저전용 상점 목록
     @Override
     public List<ManagerDto> managerList(ManagerDto managerDto) {
-        UsersEntity user = userRepository.findByUserId(managerDto.getUserId())
+        UsersEntity user = userRepository.findByUser(managerDto.getUser())
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
         List<StoreEntity> storeEntities =
-                storeRepository.findByUserId(user);
+                storeRepository.findByUser(user);
 
         // 조회된 상점 목록을 ManagerDto 리스트로 변환
         return storeEntities.stream().map(store -> ManagerDto.builder()
-                .userId(user.getUserId())
+                .user(user.getUser())
                 .store(store.getStore())
                 .storeLocation(store.getStoreLocation())
                 .storeImg(store.getStoreImg())

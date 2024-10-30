@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import zerobase.tableNow.domain.baseEntity.BaseEntity;
 import zerobase.tableNow.domain.constant.Role;
+import zerobase.tableNow.domain.constant.Status;
+import zerobase.tableNow.domain.user.entity.UsersEntity;
 
 @Getter
 @Setter
@@ -20,11 +22,16 @@ public class ReviewEntity extends BaseEntity {
     @Column(name = "store_id")
     private String store; // 상점
 
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UsersEntity user;
+
     private String contents; // 리뷰내용
 
     @Enumerated(EnumType.STRING)
     private Role role; //사용자타입
+
+    private Status userStatus;
 
 
 

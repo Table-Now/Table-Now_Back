@@ -30,7 +30,7 @@ public class TokenProvider {
 
     public String generateAccessToken(LoginDto dto) {
         return Jwts.builder()
-                .claim("userId", dto.getUserId())
+                .claim("user", dto.getUser())
                 .claim("role", dto.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -47,7 +47,7 @@ public class TokenProvider {
     }
 
     public String getUserIdFromJWT(String token) {
-        return getClaims(token).get("userId", String.class);
+        return getClaims(token).get("user", String.class);
     }
 
     public boolean validateToken(String authToken) {

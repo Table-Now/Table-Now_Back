@@ -2,6 +2,7 @@ package zerobase.tableNow.domain.review.service;
 
 import zerobase.tableNow.domain.review.dto.ReviewDto;
 import zerobase.tableNow.domain.review.dto.UpdateDto;
+import zerobase.tableNow.domain.user.entity.UsersEntity;
 
 import java.util.List;
 
@@ -13,8 +14,8 @@ public interface ReviewService {
     List<ReviewDto> list();
 
     //리뷰 수정
-    UpdateDto update(Long id, ReviewDto reviewDto);
+    UpdateDto update(String user, ReviewDto reviewDto);
 
     //리뷰 삭제
-    void delete(Long id);
+    void delete(String user);
 }

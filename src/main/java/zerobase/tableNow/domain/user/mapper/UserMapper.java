@@ -22,7 +22,7 @@ public class UserMapper {
         String hashPassword = passwordEncoder.encode(dto.getPassword());
 
         return UsersEntity.builder()
-                .userId(dto.getUserId())
+                .user(dto.getUser())
                 .name(dto.getName())
                 .password(hashPassword)
                 .email(dto.getEmail())
@@ -39,7 +39,7 @@ public class UserMapper {
     //회원가입 Entity -> Dto
     public RegisterDto toDto(UsersEntity entity) {
         return RegisterDto.builder()
-                .userId(entity.getUserId())
+                .user(entity.getUser())
                 .name(entity.getName())
                 .password(entity.getPassword())
                 .email(entity.getEmail())
@@ -56,7 +56,7 @@ public class UserMapper {
     //로그인  Entity -> Dto
     public LoginDto toLoginDto(UsersEntity entity){
         return LoginDto.builder()
-                .userId(entity.getUserId())
+                .user(entity.getUser())
                 .role(entity.getRole())
                 .build();
     }

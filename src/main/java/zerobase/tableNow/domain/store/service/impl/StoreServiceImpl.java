@@ -33,7 +33,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreDto register(StoreDto storeDto) {
 
-        UsersEntity optionalUsers = userRepository.findByUserId(storeDto.getUserId())
+        UsersEntity optionalUsers = userRepository.findByUser(storeDto.getUser())
                 .orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
         Optional<StoreEntity> optionalStoreEntity = storeRepository.findByStore(storeDto.getStore());
 
@@ -132,9 +132,9 @@ public class StoreServiceImpl implements StoreService {
                 .orElseThrow(() -> new RuntimeException("해당 상점이 없습니다"));
 
 
-        UsersEntity currentUser = storeUpdate.getUserId();
+        UsersEntity currentUser = storeUpdate.getUser();
 
-        storeUpdate.setUserId(currentUser); // 기존 사용자 정보 유지
+        storeUpdate.setUser(currentUser); // 기존 사용자 정보 유지
         storeUpdate.setStore(storeDto.getStore());
         storeUpdate.setStoreLocation(storeDto.getStoreLocation());
         storeUpdate.setStoreImg(storeDto.getStoreImg());

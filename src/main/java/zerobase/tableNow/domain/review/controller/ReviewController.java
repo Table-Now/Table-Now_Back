@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import zerobase.tableNow.domain.review.dto.ReviewDto;
 import zerobase.tableNow.domain.review.dto.UpdateDto;
 import zerobase.tableNow.domain.review.service.ReviewService;
-import zerobase.tableNow.domain.store.entity.StoreEntity;
 
 import java.util.List;
 
@@ -16,30 +15,30 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    //리뷰 등록
+    // 리뷰 등록
     @PostMapping("register")
     public ResponseEntity<ReviewDto> register(@RequestParam(name = "store") String store,
                                               @RequestBody ReviewDto reviewDto){
-        return ResponseEntity.ok(reviewService.register(store,reviewDto));
+        return ResponseEntity.ok(reviewService.register(store, reviewDto));
     }
 
-    //리뷰 목록
+    // 리뷰 목록 조회
     @GetMapping("list")
-    public ResponseEntity <List<ReviewDto>> list (){
+    public ResponseEntity<List<ReviewDto>> list(){
         return ResponseEntity.ok().body(reviewService.list());
     }
 
-    //리뷰 수정
+    // 리뷰 수정
     @PutMapping("update")
-    public ResponseEntity<UpdateDto> update(@RequestParam(name = "id") Long id,
+    public ResponseEntity<UpdateDto> update(@RequestParam(name = "user") String user,
                                             @RequestBody ReviewDto reviewDto){
-        return ResponseEntity.ok().body(reviewService.update(id,reviewDto));
+        return ResponseEntity.ok().body(reviewService.update(user, reviewDto));
     }
 
-    //리뷰 삭제
+    // 리뷰 삭제
     @DeleteMapping("delete")
-    public ResponseEntity<?> delete(@RequestParam(name = "id")Long id){
-        reviewService.delete(id);
+    public ResponseEntity<?> delete(@RequestParam(name = "user") String user){
+        reviewService.delete(user);
         return ResponseEntity.noContent().build();
     }
 }

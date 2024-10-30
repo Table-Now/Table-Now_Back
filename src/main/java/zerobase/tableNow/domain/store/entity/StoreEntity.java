@@ -19,7 +19,7 @@ public class StoreEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UsersEntity userId;
+    private UsersEntity user;
     private String store;
     private String storeLocation;
     private String storeImg;

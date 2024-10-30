@@ -9,6 +9,6 @@ import zerobase.tableNow.domain.constant.Role;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteDto {
-    private String userId;
+    private String user;
     private Role role;
 }

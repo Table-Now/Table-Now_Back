@@ -36,7 +36,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDto request(ReservationDto reservationDto) {
         // 1. 사용자와 매장 정보 조회
         UsersEntity users = userRepository
-                .findByUserId(reservationDto.getUserId())
+                .findByUser(reservationDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
 
         StoreEntity store = storeRepository

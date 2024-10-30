@@ -36,9 +36,9 @@ public class UserController {
 
     // 이메일 인증
     @GetMapping("email-auth")
-    public ResponseEntity<?> emailAuth(@RequestParam("id") String userId,
+    public ResponseEntity<?> emailAuth(@RequestParam("user") String user,
                                        @RequestParam("key") String authKey) {
-        boolean result = userService.emailAuth(userId, authKey);
+        boolean result = userService.emailAuth(user, authKey);
 
         if (result) {
             return ResponseEntity.ok().body(Map.of(
@@ -74,9 +74,9 @@ public class UserController {
 
     //회원 정지
     @DeleteMapping("delete")
-    public ResponseEntity<DeleteDto> userDelete(@RequestParam(name = "userId") String userId ){
+    public ResponseEntity<DeleteDto> userDelete(@RequestParam(name = "user") String user ){
 
-        return ResponseEntity.ok().body(userService.userDelete(userId));
+        return ResponseEntity.ok().body(userService.userDelete(user));
     }
 
 }

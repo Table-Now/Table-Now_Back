@@ -14,10 +14,11 @@ import java.util.Optional;
 public interface StoreRepository extends JpaRepository<StoreEntity,Long> {
 
     //매니저전용 상점 목록
-    List<StoreEntity> findByUserId(UsersEntity userId);
+    List<StoreEntity> findByUser(UsersEntity user);
 
     Optional<StoreEntity> findByStore(String store);
 
     List<StoreEntity> findByStoreContainingIgnoreCase(String keyword);
+
 }
 

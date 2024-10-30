@@ -26,15 +26,15 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
 
     /**
-     * 리뷰등록
-     * @param store
-     * @param reviewDto
-     * @return 리뷰내용
+     * 리뷰 등록
+     * @param store 상점 이름
+     * @param reviewDto 리뷰 DTO
+     * @return 등록된 리뷰 내용
      */
     @Override
     public ReviewDto register(String store, ReviewDto reviewDto) {
         // 사용자 확인
-        UsersEntity user = userRepository.findByUserId(reviewDto.getUserId())
+        UsersEntity user = userRepository.findByUser(reviewDto.getUser())
                 .orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
 
         // ReviewEntity 생성 및 저장
@@ -45,15 +45,14 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewMapper.toReviewDto(savedEntity);
     }
 
+
     /**
-     * 리뷰목록
-     * @return 리뷰목록
+     * 리뷰 목록 조회
+     * @return 리뷰 목록
      */
     @Override
     public List<ReviewDto> list() {
-        List<ReviewEntity> reviewEntities = reviewRepository
-                .findAllByOrderByCreateAtDesc();
-
+        List<ReviewEntity> reviewEntities = reviewRepository.findAllByOrderByCreateAtDesc();
         return reviewEntities.stream()
                 .map(reviewMapper::toReviewDto)
                 .collect(Collectors.toList());
@@ -61,14 +60,19 @@ public class ReviewServiceImpl implements ReviewService {
 
     /**
      * 리뷰 수정
-     * @param id
-     * @param reviewDto
-     * @return 리뷰 수정
+     * @param user 사용자 ID
+     * @param reviewDto 수정할 리뷰 DTO
+     * @return 수정된 리뷰 내용
      */
     @Override
-    public UpdateDto update(Long id, ReviewDto reviewDto) {
-        ReviewEntity existingReview = reviewRepository.findById(id)
+    public UpdateDto update(String user, ReviewDto reviewDto) {
+        // 사용자 확인
+        UsersEntity users = userRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
+
+        ReviewEntity existingReview = reviewRepository.findByUser(users)
                 .orElseThrow(() -> new RuntimeException("해당 리뷰가 없습니다."));
+
 
         // 기존 리뷰 엔티티 업데이트
         existingReview.setStore(reviewDto.getStore());
@@ -83,14 +87,17 @@ public class ReviewServiceImpl implements ReviewService {
 
     /**
      * 리뷰 삭제
-     * @param id
+     * @param user 사용자 ID
      */
     @Override
-    public void delete(Long id) {
-        if (reviewRepository.existsById(id)) {
-            reviewRepository.deleteById(id);
+    public void delete(String user) {
+        UsersEntity users = userRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("Review with user id " + user + " not found"));
+
+        if (reviewRepository.existsByUser(users)) {
+            reviewRepository.deleteByUser(users);
         } else {
-            throw new EntityNotFoundException("Review with id " + id + " not found");
+            throw new EntityNotFoundException("Review with user id " + users + " not found");
         }
     }
 }

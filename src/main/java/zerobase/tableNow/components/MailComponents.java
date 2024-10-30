@@ -35,8 +35,8 @@ public class MailComponents {
     }
 
     // 인증 메일 템플릿 생성
-    public String getEmailAuthTemplate(String userId, String emailAuthKey) {
-        String authUrl = "http://localhost:8080/user/email-auth?id=" + userId + "&key=" + emailAuthKey;
+    public String getEmailAuthTemplate(String user, String emailAuthKey) {
+        String authUrl = "http://localhost:8080/user/email-auth?user=" + user + "&key=" + emailAuthKey;
 
         return "<div style='margin:100px;'>" +
                 "<h1>TableNow 가입을 환영합니다!</h1>" +

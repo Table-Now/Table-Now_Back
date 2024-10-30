@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class StoreRequestDto {
-    private String userId; //상점 담당매니저
+    private String user; //상점 담당매니저
     private String store;// 상점 이름
     private String storeLocation; //상점 장소
     private String storeImg; // 상점 이미지

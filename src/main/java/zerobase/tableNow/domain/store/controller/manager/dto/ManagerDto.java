@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class ManagerDto {
-    private String userId;
+    private String user;
     private String phone;
 
     private String store;

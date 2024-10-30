@@ -10,7 +10,7 @@ public class StoreMapper {
     public StoreEntity toStoreEntity(StoreDto storeDto, UsersEntity optionalUsers) {
         //상점등록 DTO -> Entity
         return StoreEntity.builder()
-                .userId(optionalUsers)
+                .user(optionalUsers)
                 .store(storeDto.getStore())
                 .storeLocation(storeDto.getStoreLocation())
                 .storeImg(storeDto.getStoreImg())
@@ -27,7 +27,7 @@ public class StoreMapper {
     //상점등록 Entity -> Dto
     public StoreDto toStoreDto(StoreEntity storeEntity) {
         return StoreDto.builder()
-                .userId(storeEntity.getUserId().getUserId())
+                .user(storeEntity.getUser().getUser())
                 .store(storeEntity.getStore())
                 .storeLocation(storeEntity.getStoreLocation())
                 .storeImg(storeEntity.getStoreImg())
@@ -43,7 +43,7 @@ public class StoreMapper {
     //상점 목록 Entity를 DTO로 변환
     public StoreDto convertToDto(StoreEntity storeEntity) {
         return StoreDto.builder()
-                .userId(storeEntity.getUserId().getUserId())
+                .user(storeEntity.getUser().getUser())
                 .store(storeEntity.getStore())
                 .storeLocation(storeEntity.getStoreLocation())
                 .storeImg(storeEntity.getStoreImg())

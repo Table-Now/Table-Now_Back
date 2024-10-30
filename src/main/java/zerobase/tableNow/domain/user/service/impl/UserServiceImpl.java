@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public RegisterDto register(RegisterDto registerDto) {
         // 중복 체크
-        Optional<UsersEntity> optionalUsers = userRepository.findByUserId(registerDto.getUserId());
+        Optional<UsersEntity> optionalUsers = userRepository.findByUser(registerDto.getUser());
         if (optionalUsers.isPresent()) {
             log.info("이미 존재하는 아이디 입니다.");
             throw new RuntimeException("이미 존재하는 아이디 입니다.");
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
         // 인증 메일 발송
         String email = registerDto.getEmail();
         String subject = "TableNow 이메일 인증";
-        String text = mailComponents.getEmailAuthTemplate(savedEntity.getUserId(), savedEntity.getEmailAuthKey());
+        String text = mailComponents.getEmailAuthTemplate(savedEntity.getUser(), savedEntity.getEmailAuthKey());
 
         boolean sendResult = mailComponents.sendMail(email, subject, text);
         if (!sendResult) {
@@ -59,21 +59,21 @@ public class UserServiceImpl implements UserService {
 
     //이메일인증
     @Transactional
-    public boolean emailAuth(String userId, String authKey) {
-        Optional<UsersEntity> optionalUser = userRepository.findByUserIdAndEmailAuthKey(userId, authKey);
+    public boolean emailAuth(String user, String emailAuthKey) {
+        Optional<UsersEntity> optionalUser = userRepository.findByUserAndEmailAuthKey(user, emailAuthKey);
         if (optionalUser.isEmpty()) {
             return false;
         }
 
-        UsersEntity user = optionalUser.get();
-        if (user.isEmailAuthYn()) {
+        UsersEntity users= optionalUser.get();
+        if (users.isEmailAuthYn()) {
             return false;
         }
 
-        user.setEmailAuthYn(true);
-        user.setEmailAuthDt(LocalDateTime.now());
-        user.setUserStatus(Status.ING);
-        userRepository.save(user);
+        users.setEmailAuthYn(true);
+        users.setEmailAuthDt(LocalDateTime.now());
+        users.setUserStatus(Status.ING);
+        userRepository.save(users);
 
         return true;
     }
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
     //로그인
     @Override
     public LoginDto login(LoginDto loginDto) {
-        UsersEntity user = userRepository.findByUserId(loginDto.getUserId())
+        UsersEntity user = userRepository.findByUser(loginDto.getUser())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String rePassword(RePasswordDto rePasswordDto) {
             // 1. 사용자 확인 (userId로 유효성 검증)
-            Optional<UsersEntity> optionalUser = userRepository.findByUserId(rePasswordDto.getUserId());
+            Optional<UsersEntity> optionalUser = userRepository.findByUser(rePasswordDto.getUser());
 
             // 유효성 검증: user가 존재하는지 확인
             UsersEntity user = optionalUser.orElseThrow(() -> new RuntimeException("해당 사용자 정보를 찾을 수 없습니다."));
@@ -128,16 +128,16 @@ public class UserServiceImpl implements UserService {
 
     //회원 탈퇴
     @Override
-    public DeleteDto userDelete(String userId) {
-        Optional<UsersEntity> optionalUsers = userRepository.findByUserId(userId);
+    public DeleteDto userDelete(String user) {
+        Optional<UsersEntity> optionalUsers = userRepository.findByUser(user);
         if (optionalUsers.isEmpty()) {
             throw new RuntimeException("User not found");
         }
 
-        UsersEntity user = optionalUsers.get();
-        user.setUserStatus(Status.STOP);
-        UsersEntity savedUser = userRepository.save(user);
+        UsersEntity users = optionalUsers.get();
+        users.setUserStatus(Status.STOP);
+        UsersEntity savedUser = userRepository.save(users);
 
-        return new DeleteDto(savedUser.getUserId(), savedUser.getRole());
+        return new DeleteDto(savedUser.getUser(), savedUser.getRole());
     }
 }
