@@ -4,12 +4,16 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import zerobase.tableNow.domain.constant.Status;
+import zerobase.tableNow.domain.reservation.repository.ReservationRepository;
 import zerobase.tableNow.domain.review.dto.ReviewDto;
 import zerobase.tableNow.domain.review.dto.UpdateDto;
 import zerobase.tableNow.domain.review.entity.ReviewEntity;
 import zerobase.tableNow.domain.review.mapper.ReviewMapper;
 import zerobase.tableNow.domain.review.repository.ReviewRepository;
 import zerobase.tableNow.domain.review.service.ReviewService;
+import zerobase.tableNow.domain.store.entity.StoreEntity;
+import zerobase.tableNow.domain.store.repository.StoreRepository;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.repository.UserRepository;
 
@@ -23,11 +27,14 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final ReservationRepository reservationRepository;
+    private final StoreRepository storeRepository;
     private final ReviewMapper reviewMapper;
 
     /**
      * 리뷰 등록
-     * @param store 상점 이름
+     *
+     * @param store     상점 이름
      * @param reviewDto 리뷰 DTO
      * @return 등록된 리뷰 내용
      */
@@ -36,6 +43,21 @@ public class ReviewServiceImpl implements ReviewService {
         // 사용자 확인
         UsersEntity user = userRepository.findByUser(reviewDto.getUser())
                 .orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
+
+        // store 이름으로 StoreEntity 조회
+        StoreEntity storeEntity = storeRepository.findByStore(store)
+                .orElseThrow(() -> new RuntimeException("해당 상점을 찾을 수 없습니다."));
+
+        // 해당 상점을 이용한 유저인지 확인
+        boolean hasValidReservation = reservationRepository.existsByUserAndStoreAndReservationStatus(
+                user,
+                storeEntity,
+                Status.ING
+        );
+        if (!hasValidReservation) {
+            throw new RuntimeException("상점을 이용 후 리뷰를 작성할 수 있습니다.");
+        }
+
 
         // ReviewEntity 생성 및 저장
         ReviewEntity reviewEntity = reviewMapper.toReviewEntity(reviewDto, user);
@@ -48,6 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     /**
      * 리뷰 목록 조회
+     *
      * @return 리뷰 목록
      */
     @Override
@@ -60,7 +83,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     /**
      * 리뷰 수정
-     * @param user 사용자 ID
+     *
+     * @param user      사용자 ID
      * @param reviewDto 수정할 리뷰 DTO
      * @return 수정된 리뷰 내용
      */
@@ -87,6 +111,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     /**
      * 리뷰 삭제
+     *
      * @param user 사용자 ID
      */
     @Override

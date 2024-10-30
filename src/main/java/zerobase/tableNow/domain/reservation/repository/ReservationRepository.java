@@ -23,4 +23,8 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     //폰번호으로 예약 승인
     Optional<ReservationEntity> findByPhone(String phone);
 
+    boolean existsByUserAndStoreAndReservationStatus(
+            UsersEntity user
+            , StoreEntity store
+            , Status reservationStatus);
 }

@@ -31,8 +31,6 @@ public class ReviewEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role; //사용자타입
 
-    private Status userStatus;
-
-
-
+    @Enumerated(EnumType.STRING)
+    private Status reservationStatus;
 }

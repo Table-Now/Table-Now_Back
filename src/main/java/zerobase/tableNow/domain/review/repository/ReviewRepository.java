@@ -21,4 +21,5 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     void deleteByUser(UsersEntity user);
 
     boolean existsByUser(UsersEntity user);
+
 }
