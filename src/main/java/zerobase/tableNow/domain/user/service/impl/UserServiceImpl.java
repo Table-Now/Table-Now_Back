@@ -30,7 +30,11 @@ public class UserServiceImpl implements UserService {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    //회원가입
+    /**
+     * 회원가입
+     * @param registerDto
+     * @return 등록된 회원 정보 반환
+     */
     @Override
     public RegisterDto register(RegisterDto registerDto) {
         // 중복 체크
@@ -57,7 +61,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(savedEntity);
     }
 
-    //이메일인증
+    /**
+     * 이메일 인증
+     * @param user
+     * @param emailAuthKey
+     * @return 인증 성공시 True, 인증 실패시 False
+     */
     @Transactional
     public boolean emailAuth(String user, String emailAuthKey) {
         Optional<UsersEntity> optionalUser = userRepository.findByUserAndEmailAuthKey(user, emailAuthKey);
@@ -78,7 +87,11 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    //로그인
+    /**
+     * 로그인
+     * @param loginDto
+     * @return responseDto 반환
+     */
     @Override
     public LoginDto login(LoginDto loginDto) {
         UsersEntity user = userRepository.findByUser(loginDto.getUser())
@@ -102,7 +115,11 @@ public class UserServiceImpl implements UserService {
         return responseDto;
     }
 
-    //비밀번호 재설정
+    /**
+     * 비밀번호 재설정
+     * @param rePasswordDto
+     * @return 성공시 "success" 반환
+     */
     @Override
     public String rePassword(RePasswordDto rePasswordDto) {
             // 1. 사용자 확인 (userId로 유효성 검증)
@@ -126,7 +143,11 @@ public class UserServiceImpl implements UserService {
             return "Success";
     }
 
-    //회원 탈퇴
+    /**
+     * 회원 탈퇴
+     * @param user
+     * @return DeleteDto 반환
+     */
     @Override
     public DeleteDto userDelete(String user) {
         Optional<UsersEntity> optionalUsers = userRepository.findByUser(user);

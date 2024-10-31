@@ -36,5 +36,5 @@ public class StoreEntity extends BaseEntity {
     private double longitude; // 경도 추가
 
     @Transient
-    private Double distance;
+    private Double distance; // 거리순
 }

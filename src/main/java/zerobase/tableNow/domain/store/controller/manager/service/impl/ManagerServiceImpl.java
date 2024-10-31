@@ -24,7 +24,11 @@ public class ManagerServiceImpl implements ManagerService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
 
-    //매니저전용 상점 목록
+    /**
+     * 매니저 전용 상점 목록
+     * @param managerDto
+     * @return 해당 본인 상점에 대한 목록 반환
+     */
     @Override
     public List<ManagerDto> managerList(ManagerDto managerDto) {
         UsersEntity user = userRepository.findByUser(managerDto.getUser())
@@ -48,7 +52,11 @@ public class ManagerServiceImpl implements ManagerService {
         ).collect(Collectors.toList());
     }
 
-    //매니저전용 예약정보 확인
+    /**
+     * 매니저 전용 예약 정보 확인
+     * @param store
+     * @return 본인 상점에 대한 예약정보
+     */
     @Override
     public List<ConfirmDto> confirmList(String store) {
         List<ReservationEntity> reservations = managerRepository.findByStore_StoreAndReservationStatus(store, Status.ING);

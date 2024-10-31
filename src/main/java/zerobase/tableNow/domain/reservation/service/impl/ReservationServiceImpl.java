@@ -31,10 +31,14 @@ public class ReservationServiceImpl implements ReservationService {
     private final StoreRepository storeRepository;
     private final ReservationMapper reservationMapper;
 
-    //예약 요청
+    /**
+     * 예약 요청
+     * @param reservationDto
+     * @return
+     */
     @Override
     public ReservationDto request(ReservationDto reservationDto) {
-        // 1. 사용자와 매장 정보 조회
+        // 사용자와 매장 정보 조회
         UsersEntity users = userRepository
                 .findByUser(reservationDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
@@ -43,19 +47,19 @@ public class ReservationServiceImpl implements ReservationService {
                 .findByStore(reservationDto.getStore())
                 .orElseThrow(() -> new RuntimeException("해당 가게가 없습니다."));
 
-        // 2. 10분 단위 시간 검증
+        // 10분 단위 시간 검증
         validateTimeInterval(reservationDto.getReserDateTime());
 
-        // 3. 영업시간 체크
+        // 영업시간 체크
         validateBusinessHours(store, reservationDto.getReserDateTime());
 
-        // 4. 휴무일 체크
+        // 휴무일 체크
         validateStoreHoliday(store, reservationDto.getReserDateTime());
 
-        // 5. 중복 예약 체크
+        // 중복 예약 체크
         validateDuplicateReservation(store, reservationDto.getReserDateTime(), users);
 
-        // 6. 예약 저장
+        // 예약 저장
         ReservationEntity reservationEntity = reservationMapper.toReserEntity(reservationDto, users, store);
         ReservationEntity saveEntity = reservationRepository.save(reservationEntity);
 
@@ -122,7 +126,11 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
-    // 예약 확정
+    /**
+     * 예약확정
+     * @param phone
+     * @return 예약목록
+     */
     @Override
     public ApprovalDto approve(String phone) {
         Optional<ReservationEntity> optionalReservation = reservationRepository.findByPhone(phone);

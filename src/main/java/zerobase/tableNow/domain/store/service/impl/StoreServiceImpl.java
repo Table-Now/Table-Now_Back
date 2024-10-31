@@ -29,7 +29,11 @@ public class StoreServiceImpl implements StoreService {
     private final StoreMapper storeMapper;
     private final LocationService locationService;
 
-    //상점등록
+    /**
+     * 상점등록
+     * @param storeDto
+     * @return 상점 등록 내용
+     */
     @Override
     public StoreDto register(StoreDto storeDto) {
 
@@ -53,7 +57,14 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.toStoreDto(saveEntity);
     }
 
-    //상점 목록
+    /**
+     * 상점 목록
+     * @param keyword
+     * @param sortType
+     * @param userLat
+     * @param userLon
+     * @return 필터를 통한 상점 목록 반환
+     */
     @Override
     public List<StoreDto> getAllStores(String keyword, SortType sortType, Double userLat, Double userLon) {
         List<StoreEntity> storeEntities;
@@ -124,8 +135,21 @@ public class StoreServiceImpl implements StoreService {
         return R * c; // 거리 (km)
     }
 
+    // Null 처리를 위한 헬퍼 메소드들
+    private int compareRatings(Integer rating1, Integer rating2) {
+        // null을 0으로 처리
+        int r1 = rating1 == null ? 0 : rating1;
+        int r2 = rating2 == null ? 0 : rating2;
+        return Integer.compare(r1, r2);
+    }
 
-    //상점 수정
+
+    /**
+     * 상점 수정
+     * @param id
+     * @param storeDto
+     * @return 상점 수정내용
+     */
     @Override
     public StoreDto update(Long id, StoreDto storeDto) {
         StoreEntity storeUpdate = storeRepository.findById(id)
@@ -152,7 +176,11 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.convertToDto(updatedStore);
     }
 
-    //상점 상세정보
+    /**
+     * 상점 상세정보
+     * @param id
+     * @return 상세정보
+     */
     @Override
     public StoreDto detail(Long id) {
         StoreEntity storeDetail = storeRepository.findById(id)
@@ -161,25 +189,13 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.convertToDto(storeDetail);
     }
 
-    //상점 삭제
+    /**
+     * 상점 삭제
+     * @param id
+     */
     @Override
     public void delete(Long id) {
         storeRepository.deleteById(id);
-    }
-
-    // Null 처리를 위한 헬퍼 메소드들
-    private int compareRatings(Integer rating1, Integer rating2) {
-        // null을 0으로 처리
-        int r1 = rating1 == null ? 0 : rating1;
-        int r2 = rating2 == null ? 0 : rating2;
-        return Integer.compare(r1, r2);
-    }
-
-    private int compareNames(String name1, String name2) {
-        // null을 빈 문자열로 처리
-        String n1 = name1 == null ? "" : name1;
-        String n2 = name2 == null ? "" : name2;
-        return n1.compareTo(n2);
     }
 
 
