@@ -5,6 +5,9 @@
 <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"/></a> <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat-square&logo=SpringBoot&logoColor=white"/></a> <img src ="https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariadb&logoColor=white"/></a><img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=flat-square&logo=swagger&logoColor=white"/></a>
   <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=Postman&logoColor=white"/></a>
 
+## 💡ERD 시각화
+<img width="800" alt="스크린샷 2024-10-31 오후 3 05 41" src="https://github.com/user-attachments/assets/90e31e71-b444-4257-bcb6-377dc5b8e1e5">
+
 ## 공통
 - [x] 회원가입 
 - [x] 회원가입 후 이메일 인증한 후 로그인 구현
@@ -17,7 +20,7 @@
 - [x] 상점 상세 정보
 - [x] 상점 목록 (가나다순, 별점순, 거리순)
 - [x] 점주 예약 정보 확인 (날짜별 시간 테이블 목록)
-- [ ] 예약 이용 후 리뷰 작성 기능 구현
+- [x] 예약 이용 후 리뷰 작성 기능 구현
   -  예약자인지 확인 및 작성, 수정, 삭제 구현
   - 수정은 리뷰 작성자만 / 삭제 권한은 리뷰작성자,매장의 관리자(점장) 삭제 가능  
 
