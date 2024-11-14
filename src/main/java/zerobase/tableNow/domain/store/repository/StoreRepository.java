@@ -20,5 +20,6 @@ public interface StoreRepository extends JpaRepository<StoreEntity,Long> {
 
     List<StoreEntity> findByStoreContainingIgnoreCase(String keyword);
 
+
 }
 

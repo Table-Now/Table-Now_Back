@@ -25,6 +25,7 @@ public class ReservationMapper {
     }
     public ReservationDto toReserDto(ReservationEntity reservationEntity){
         return ReservationDto.builder()
+                .id(reservationEntity.getId())
                 .userId(reservationEntity.getUser().getUser())
                 .phone(reservationEntity.getPhone())
                 .store(reservationEntity.getStore().getStore())

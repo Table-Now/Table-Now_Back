@@ -47,7 +47,6 @@ public class StoreController {
     @GetMapping("detail")
     public ResponseEntity<StoreDto> detail(@RequestParam(name = "id") Long id){
         return ResponseEntity.ok().body(storeService.detail(id));
-
     }
     //상점 삭제
     @DeleteMapping("delete")

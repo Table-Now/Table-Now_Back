@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import zerobase.tableNow.domain.user.dto.DeleteDto;
-import zerobase.tableNow.domain.user.dto.LoginDto;
-import zerobase.tableNow.domain.user.dto.RePasswordDto;
-import zerobase.tableNow.domain.user.dto.RegisterDto;
+import zerobase.tableNow.domain.user.dto.*;
 import zerobase.tableNow.domain.user.service.UserService;
 
 import javax.naming.AuthenticationException;
@@ -77,6 +74,12 @@ public class UserController {
     public ResponseEntity<DeleteDto> userDelete(@RequestParam(name = "user") String user ){
 
         return ResponseEntity.ok().body(userService.userDelete(user));
+    }
+
+    //내 정보 가져오기
+    @GetMapping("/myinfo")
+    public ResponseEntity<MyInfoDto> myInfo(@RequestParam(name= "user") String user){
+        return ResponseEntity.ok().body(userService.myInfo(user));
     }
 
 }

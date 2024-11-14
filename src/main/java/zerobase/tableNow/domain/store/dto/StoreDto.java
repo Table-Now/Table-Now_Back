@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class StoreDto{
+    private Long id;
     private String user; //상점 담당매니저
     private String store;// 상점 이름
     private String storeLocation; //상점 장소

@@ -15,10 +15,9 @@ import java.util.UUID;
 @Component
 public class UserMapper {
     private final PasswordEncoder passwordEncoder;
-    //회원가입 DTO -> Entity
-    public UsersEntity toEntity(RegisterDto dto) {
-        Role userRole = dto.isManagerYn() ? Role.MANAGER : Role.USER;
 
+    // 회원가입 DTO -> Entity
+    public UsersEntity toEntity(RegisterDto dto) {
         String hashPassword = passwordEncoder.encode(dto.getPassword());
 
         return UsersEntity.builder()
@@ -27,16 +26,12 @@ public class UserMapper {
                 .password(hashPassword)
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
-                .emailAuthYn(dto.isEmailAuthYn())
-                .emailAuthDt(dto.getEmailAuthDt())
-                .emailAuthKey(UUID.randomUUID().toString())
-                .role(userRole)
-                .managerYn(dto.isManagerYn())
-                .userStatus(Status.REQ)
+                .role(Role.USER)
+                .userStatus(Status.REQ)  // 초기 상태는 '요청'
                 .build();
     }
 
-    //회원가입 Entity -> Dto
+    // 회원가입 Entity -> Dto
     public RegisterDto toDto(UsersEntity entity) {
         return RegisterDto.builder()
                 .user(entity.getUser())
@@ -44,16 +39,12 @@ public class UserMapper {
                 .password(entity.getPassword())
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
-                .emailAuthYn(entity.isEmailAuthYn())
-                .emailAuthDt(entity.getEmailAuthDt())
-                .emailAuthKey(entity.getEmailAuthKey())
-                .role(entity.getRole())
-                .managerYn(entity.isManagerYn())
+                .role(Role.USER)
                 .userStatus(entity.getUserStatus())
                 .build();
     }
 
-    //로그인  Entity -> Dto
+    // 로그인 Entity -> Dto
     public LoginDto toLoginDto(UsersEntity entity){
         return LoginDto.builder()
                 .user(entity.getUser())
@@ -61,3 +52,4 @@ public class UserMapper {
                 .build();
     }
 }
+

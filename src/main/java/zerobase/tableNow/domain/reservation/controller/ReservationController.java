@@ -8,6 +8,8 @@ import zerobase.tableNow.domain.reservation.dto.ApprovalDto;
 import zerobase.tableNow.domain.reservation.dto.ReservationDto;
 import zerobase.tableNow.domain.reservation.service.ReservationService;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class ReservationController {
     //예약요청
     @PostMapping("request")
     public ResponseEntity<ReservationDto> request(@RequestBody ReservationDto reservationDto){
+        log.info("컨트롤러 요청 등록 + {}", reservationDto);
         return ResponseEntity.ok().body(reservationService.request(reservationDto));
     }
 
@@ -28,4 +31,21 @@ public class ReservationController {
         ApprovalDto response = reservationService.approve(phone);
         return ResponseEntity.ok(response);
     }
+
+    // 상점 예약 체크
+    @GetMapping("myrelist")
+    public ResponseEntity<Boolean> myrelist(
+            @RequestParam(name = "user") String user,
+            @RequestParam(name = "id") Long id
+    ) {
+        boolean reservation = reservationService.myrelist(user,id);
+        return ResponseEntity.ok().body(reservation);
+    }
+
+    //내 예약 목록
+    @GetMapping("reserlist")
+    public ResponseEntity<List<ReservationDto>> reservationList(@RequestParam(name = "user") String user) {
+        return ResponseEntity.ok().body(reservationService.reservationList(user));
+    }
+
 }

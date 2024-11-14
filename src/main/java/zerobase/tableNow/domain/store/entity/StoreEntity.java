@@ -3,7 +3,11 @@ package zerobase.tableNow.domain.store.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import zerobase.tableNow.domain.baseEntity.BaseEntity;
+import zerobase.tableNow.domain.reservation.entity.ReservationEntity;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -37,4 +41,7 @@ public class StoreEntity extends BaseEntity {
 
     @Transient
     private Double distance; // 거리순
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ReservationEntity> reservations = new ArrayList<>();
 }

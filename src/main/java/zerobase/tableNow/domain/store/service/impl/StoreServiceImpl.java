@@ -155,26 +155,52 @@ public class StoreServiceImpl implements StoreService {
         StoreEntity storeUpdate = storeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 상점이 없습니다"));
 
-
         UsersEntity currentUser = storeUpdate.getUser();
-
         storeUpdate.setUser(currentUser); // 기존 사용자 정보 유지
-        storeUpdate.setStore(storeDto.getStore());
-        storeUpdate.setStoreLocation(storeDto.getStoreLocation());
-        storeUpdate.setStoreImg(storeDto.getStoreImg());
-        storeUpdate.setStoreContents(storeDto.getStoreContents());
-        storeUpdate.setRating(storeDto.getRating());
-        storeUpdate.setStoreOpen(storeDto.getStoreOpen());
-        storeUpdate.setStoreClose(storeDto.getStoreClose());
-        storeUpdate.setStoreWeekOff(storeDto.getStoreWeekOff());
-        storeUpdate.setUpdateAt(LocalDateTime.now());
 
+        // 각 필드에 대해 빈값 또는 공백만 있는 경우 기존 값을 유지
+        if (storeDto.getStore() != null && !storeDto.getStore().trim().isEmpty()) {
+            storeUpdate.setStore(storeDto.getStore());
+        }
+
+        // 위치가 변경된 경우 위도, 경도 업데이트
+        if (storeDto.getStoreLocation() != null && !storeDto.getStoreLocation().trim().isEmpty()) {
+            // 기존 위치와 다른 경우에만 위도,경도 업데이트
+            if (!storeDto.getStoreLocation().equals(storeUpdate.getStoreLocation())) {
+                double[] coordinates = locationService.getCoordinates(storeDto.getStoreLocation());
+                storeUpdate.setLatitude(coordinates[0]);
+                storeUpdate.setLongitude(coordinates[1]);
+                storeUpdate.setStoreLocation(storeDto.getStoreLocation());
+            }
+        }
+
+        if (storeDto.getStoreImg() != null && !storeDto.getStoreImg().trim().isEmpty()) {
+            storeUpdate.setStoreImg(storeDto.getStoreImg());
+        }
+        if (storeDto.getStoreContents() != null && !storeDto.getStoreContents().trim().isEmpty()) {
+            storeUpdate.setStoreContents(storeDto.getStoreContents());
+        }
+        if (storeDto.getRating() != null) {
+            storeUpdate.setRating(storeDto.getRating());
+        }
+        if (storeDto.getStoreOpen() != null && !storeDto.getStoreOpen().trim().isEmpty()) {
+            storeUpdate.setStoreOpen(storeDto.getStoreOpen());
+        }
+        if (storeDto.getStoreClose() != null && !storeDto.getStoreClose().trim().isEmpty()) {
+            storeUpdate.setStoreClose(storeDto.getStoreClose());
+        }
+        if (storeDto.getStoreWeekOff() != null && !storeDto.getStoreWeekOff().trim().isEmpty()) {
+            storeUpdate.setStoreWeekOff(storeDto.getStoreWeekOff());
+        }
+
+        storeUpdate.setUpdateAt(LocalDateTime.now());
 
         StoreEntity updatedStore = storeRepository.save(storeUpdate);
 
-
         return storeMapper.convertToDto(updatedStore);
     }
+
+
 
     /**
      * 상점 상세정보

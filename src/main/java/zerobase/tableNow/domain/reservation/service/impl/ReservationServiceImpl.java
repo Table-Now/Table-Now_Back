@@ -21,6 +21,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,10 +39,15 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     public ReservationDto request(ReservationDto reservationDto) {
+        log.info("서비스 요청 등록 + {}", reservationDto);
         // 사용자와 매장 정보 조회
         UsersEntity users = userRepository
                 .findByUser(reservationDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
+
+        if (!users.getPhone().equals(reservationDto.getPhone())) {
+            throw new RuntimeException("가입하신 번호와 다른 번호입니다. 확인해주세요");
+        }
 
         StoreEntity store = storeRepository
                 .findByStore(reservationDto.getStore())
@@ -160,5 +166,28 @@ public class ReservationServiceImpl implements ReservationService {
         return new ApprovalDto(phone, status, currentTime.isBefore(cutoffTime));
     }
 
+    // 예약중인지 확인
+    @Override
+    public boolean myrelist(String user, Long id) {
+        return reservationRepository.existsByUserUserAndId(user, id);
+    }
+
+    // 사용자 상점 예약 리스트 목록
+    @Override
+    public List<ReservationDto> reservationList(String user) {
+        UsersEntity userId = userRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("ID가 존재하지 않습니다."));
+
+        List<ReservationEntity> entities = reservationRepository.findByUser(userId);
+
+        return entities.stream()
+                .map(reservationMapper::toReserDto)
+                .collect(Collectors.toList());
+    }
+
+
 
 }
+
+
+

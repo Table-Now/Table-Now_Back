@@ -1,9 +1,6 @@
 package zerobase.tableNow.domain.user.service;
 
-import zerobase.tableNow.domain.user.dto.DeleteDto;
-import zerobase.tableNow.domain.user.dto.LoginDto;
-import zerobase.tableNow.domain.user.dto.RePasswordDto;
-import zerobase.tableNow.domain.user.dto.RegisterDto;
+import zerobase.tableNow.domain.user.dto.*;
 
 public interface UserService {
     //회원가입
@@ -21,4 +18,6 @@ public interface UserService {
 
     //회원 탈퇴
     DeleteDto userDelete(String userId);
+
+    MyInfoDto myInfo(String user);
 }

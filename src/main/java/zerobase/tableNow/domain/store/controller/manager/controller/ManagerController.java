@@ -18,8 +18,8 @@ public class ManagerController {
 
     // 해당 매니저의 상점 목록 조회
     @GetMapping("list")
-    public ResponseEntity<List<ManagerDto>> managerList(@RequestBody ManagerDto managerDto) {
-        List<ManagerDto> managerDtoList = managerService.managerList(managerDto);
+    public ResponseEntity<List<ManagerDto>> managerList(@RequestParam(name = "user") String user) {
+        List<ManagerDto> managerDtoList = managerService.managerList(user);
         return ResponseEntity.ok(managerDtoList);
     }
 

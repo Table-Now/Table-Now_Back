@@ -26,20 +26,19 @@ public class ManagerServiceImpl implements ManagerService {
 
     /**
      * 매니저 전용 상점 목록
-     * @param managerDto
+     * @param userId
      * @return 해당 본인 상점에 대한 목록 반환
      */
     @Override
-    public List<ManagerDto> managerList(ManagerDto managerDto) {
-        UsersEntity user = userRepository.findByUser(managerDto.getUser())
+    public List<ManagerDto> managerList(String user) {
+        UsersEntity userId = userRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
-        List<StoreEntity> storeEntities =
-                storeRepository.findByUser(user);
+        List<StoreEntity> storeEntities = storeRepository.findByUser(userId);
 
         // 조회된 상점 목록을 ManagerDto 리스트로 변환
         return storeEntities.stream().map(store -> ManagerDto.builder()
-                .user(user.getUser())
+                .user(userId.getUser())
                 .store(store.getStore())
                 .storeLocation(store.getStoreLocation())
                 .storeImg(store.getStoreImg())
@@ -51,6 +50,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .build()
         ).collect(Collectors.toList());
     }
+
 
     /**
      * 매니저 전용 예약 정보 확인

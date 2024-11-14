@@ -43,6 +43,7 @@ public class StoreMapper {
     //상점 목록 Entity를 DTO로 변환
     public StoreDto convertToDto(StoreEntity storeEntity) {
         return StoreDto.builder()
+                .id(storeEntity.getId())
                 .user(storeEntity.getUser().getUser())
                 .store(storeEntity.getStore())
                 .storeLocation(storeEntity.getStoreLocation())

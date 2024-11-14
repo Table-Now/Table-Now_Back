@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: tableNow
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/tablenow?serverTimezone=UTC&characterEncoding=UTF-8
+    username: home
+    password: 1245
+  jpa:
+    show-sql: true
+    database: mysql
+    hibernate:
+      ddl-auto: create
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jominuk1025@gmail.com
+    password: ssut kyki kgbr zgww
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  AccessSecret: kR8v#mP2$nL9qX5@jF4wC7tB1hY6sA3gE0iU8dM5xK2pW9nZ4yV6bN3cQ7mT0jH5uI8fD2oL9aS3vX6
+  AccessExpiration: 86400000
+
+kakao:
+  api:
+    key: 2ed6eb715b8f226558960d6ce8cd12cd

@@ -7,24 +7,32 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zerobase.tableNow.components.MailComponents;
 import zerobase.tableNow.domain.constant.Status;
+import zerobase.tableNow.domain.reservation.entity.ReservationEntity;
+import zerobase.tableNow.domain.reservation.repository.ReservationRepository;
+import zerobase.tableNow.domain.store.entity.StoreEntity;
+import zerobase.tableNow.domain.store.repository.StoreRepository;
 import zerobase.tableNow.domain.token.TokenProvider;
-import zerobase.tableNow.domain.user.dto.DeleteDto;
-import zerobase.tableNow.domain.user.dto.LoginDto;
-import zerobase.tableNow.domain.user.dto.RePasswordDto;
-import zerobase.tableNow.domain.user.dto.RegisterDto;
+import zerobase.tableNow.domain.user.dto.*;
+import zerobase.tableNow.domain.user.entity.EmailEntity;
 import zerobase.tableNow.domain.user.entity.UsersEntity;
 import zerobase.tableNow.domain.user.mapper.UserMapper;
+import zerobase.tableNow.domain.user.repository.EmailRepository;
 import zerobase.tableNow.domain.user.repository.UserRepository;
 import zerobase.tableNow.domain.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
+    private final EmailRepository emailRepository;
+    private final ReservationRepository reservationRepository;
     private final UserMapper userMapper;
     private final MailComponents mailComponents;
     private final TokenProvider tokenProvider;
@@ -40,18 +48,30 @@ public class UserServiceImpl implements UserService {
         // 중복 체크
         Optional<UsersEntity> optionalUsers = userRepository.findByUser(registerDto.getUser());
         if (optionalUsers.isPresent()) {
-            log.info("이미 존재하는 아이디 입니다.");
-            throw new RuntimeException("이미 존재하는 아이디 입니다.");
+            UsersEntity existingUser = optionalUsers.get();
+            if (existingUser.getUserStatus() == Status.STOP) {
+                log.info("회원탈퇴한 ID 입니다. 다른 ID를 사용해주세요.");
+                throw new RuntimeException("회원탈퇴한 ID 입니다. 다른 ID를 사용해주세요.");
+            } else {
+                log.info("이미 존재하는 아이디 입니다.");
+                throw new RuntimeException("이미 존재하는 아이디 입니다.");
+            }
         }
 
         // DTO -> Entity 변환 및 저장
         UsersEntity userEntity = userMapper.toEntity(registerDto);
         UsersEntity savedEntity = userRepository.save(userEntity);
 
+        // EmailEntity 저장 (이메일 인증 관련)
+        EmailEntity emailEntity = new EmailEntity();
+        emailEntity.setEmail(savedEntity);  // UsersEntity와 연결
+        emailEntity.setEmailAuthKey(UUID.randomUUID().toString());  // 인증 키 생성
+        emailRepository.save(emailEntity);  // EmailEntity 저장
+
         // 인증 메일 발송
         String email = registerDto.getEmail();
         String subject = "TableNow 이메일 인증";
-        String text = mailComponents.getEmailAuthTemplate(savedEntity.getUser(), savedEntity.getEmailAuthKey());
+        String text = mailComponents.getEmailAuthTemplate(savedEntity.getUser(), emailEntity.getEmailAuthKey());
 
         boolean sendResult = mailComponents.sendMail(email, subject, text);
         if (!sendResult) {
@@ -61,6 +81,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(savedEntity);
     }
 
+
     /**
      * 이메일 인증
      * @param user
@@ -69,46 +90,53 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     public boolean emailAuth(String user, String emailAuthKey) {
-        Optional<UsersEntity> optionalUser = userRepository.findByUserAndEmailAuthKey(user, emailAuthKey);
-        if (optionalUser.isEmpty()) {
+        Optional<UsersEntity> optionalUser = userRepository.findByUser(user);
+        if(optionalUser.isEmpty()) {
+            return false;
+        }
+        UsersEntity users = optionalUser.get();
+
+        Optional<EmailEntity> optionalEmail = emailRepository.findByEmailAuthKey(emailAuthKey);
+        if (optionalEmail.isEmpty()) {
+            return false;
+        }
+        EmailEntity emailUser = optionalEmail.get();
+        if(emailUser.isEmailAuthYn()) {
             return false;
         }
 
-        UsersEntity users= optionalUser.get();
-        if (users.isEmailAuthYn()) {
-            return false;
-        }
 
-        users.setEmailAuthYn(true);
-        users.setEmailAuthDt(LocalDateTime.now());
+        emailUser.setEmailAuthYn(true);
+        emailUser.setEmailAuthDt(LocalDateTime.now());
+        emailRepository.save(emailUser);
+
         users.setUserStatus(Status.ING);
         userRepository.save(users);
 
         return true;
     }
 
-    /**
-     * 로그인
-     * @param loginDto
-     * @return responseDto 반환
-     */
+    //로그인
     @Override
     public LoginDto login(LoginDto loginDto) {
         UsersEntity user = userRepository.findByUser(loginDto.getUser())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
-
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
+        if(user.getUserStatus() == Status.STOP) {
+            throw new RuntimeException("해당 ID가 없습니다.");
+        }
 
-        if (!user.isEmailAuthYn()) {
-            throw new RuntimeException("이메일 인증을 완료해주세요.");
+        EmailEntity emailAuth = emailRepository.findByEmailEmail(user.getEmail())
+                .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
+        if(!emailAuth.isEmailAuthYn()) {
+            throw new RuntimeException("가입 하신 이메일로 인증을 완료해주세요.");
         }
 
         // 로그인 성공 시 JWT 토큰 생성
-        String accessToken = tokenProvider.generateAccessToken(loginDto);
-
         LoginDto responseDto = userMapper.toLoginDto(user);
+        String accessToken = tokenProvider.generateAccessToken(responseDto);
 
         responseDto.setToken(accessToken);
 
@@ -150,15 +178,39 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public DeleteDto userDelete(String user) {
+        // 1. 사용자 조회
         Optional<UsersEntity> optionalUsers = userRepository.findByUser(user);
         if (optionalUsers.isEmpty()) {
             throw new RuntimeException("User not found");
         }
 
         UsersEntity users = optionalUsers.get();
+
+        // 2. 해당 사용자의 모든 상점 조회 후 삭제
+        List<StoreEntity> userStores = storeRepository.findByUser(users);
+        storeRepository.deleteAll(userStores);
+
+        // 3. 사용자 상태 변경
         users.setUserStatus(Status.STOP);
         UsersEntity savedUser = userRepository.save(users);
 
         return new DeleteDto(savedUser.getUser(), savedUser.getRole());
+    }
+
+    // 내 정보 조회
+    @Override
+    public MyInfoDto myInfo(String user) {
+        // 사용자 정보 조회
+        UsersEntity userEntity = userRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        // Entity를 DTO로 변환
+        return MyInfoDto.builder()
+                .user(userEntity.getUser())
+                .name(userEntity.getName())
+                .email(userEntity.getEmail())
+                .phone(userEntity.getPhone())
+                .createAt(userEntity.getCreateAt())
+                .build();
     }
 }
