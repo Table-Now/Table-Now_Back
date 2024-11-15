@@ -64,9 +64,10 @@ public class UserServiceImpl implements UserService {
 
         // EmailEntity 저장 (이메일 인증 관련)
         EmailEntity emailEntity = new EmailEntity();
-        emailEntity.setEmail(savedEntity);  // UsersEntity와 연결
-        emailEntity.setEmailAuthKey(UUID.randomUUID().toString());  // 인증 키 생성
-        emailRepository.save(emailEntity);  // EmailEntity 저장
+        emailEntity.setUser(userEntity);
+        emailEntity.setEmail(registerDto.getEmail());
+        emailEntity.setEmailAuthKey(UUID.randomUUID().toString());
+        emailRepository.save(emailEntity);
 
         // 인증 메일 발송
         String email = registerDto.getEmail();
@@ -119,27 +120,32 @@ public class UserServiceImpl implements UserService {
     //로그인
     @Override
     public LoginDto login(LoginDto loginDto) {
+        // 1. 먼저 사용자 찾기
         UsersEntity user = userRepository.findByUser(loginDto.getUser())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
+
+        // 2. 비밀번호 확인
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
+
+        // 3. 사용자 상태 확인
         if(user.getUserStatus() == Status.STOP) {
             throw new RuntimeException("해당 ID가 없습니다.");
         }
 
-        EmailEntity emailAuth = emailRepository.findByEmailEmail(user.getEmail())
+        // 4. 이메일 인증 확인 - userId로 조회
+        EmailEntity emailAuth = emailRepository.findTopByUserIdOrderByIdDesc(user.getId())
                 .orElseThrow(() -> new RuntimeException("해당 ID가 없습니다."));
+
         if(!emailAuth.isEmailAuthYn()) {
             throw new RuntimeException("가입 하신 이메일로 인증을 완료해주세요.");
         }
 
-        // 로그인 성공 시 JWT 토큰 생성
+        // 5. 로그인 성공 처리
         LoginDto responseDto = userMapper.toLoginDto(user);
         String accessToken = tokenProvider.generateAccessToken(responseDto);
-
         responseDto.setToken(accessToken);
-
         return responseDto;
     }
 

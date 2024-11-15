@@ -22,9 +22,6 @@ public class RegisterDto {
     private String password;
     private String email;
     private String phone;
-//    private boolean emailAuthYn; //메일 인증 했는지
-//    private LocalDateTime emailAuthDt; //이메일 인증 날짜
-//    private String emailAuthKey; // 회원가입할때 생성해서 메일인증할때 쓰는 Key
 
     @Enumerated(EnumType.STRING)
     private Role role; //사용자타입

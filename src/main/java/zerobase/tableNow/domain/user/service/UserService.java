@@ -12,7 +12,6 @@ public interface UserService {
     //로그인
     LoginDto login(LoginDto loginDto);
 
-
     //비밀번호 재설정
     String rePassword(RePasswordDto rePasswordDto);
 

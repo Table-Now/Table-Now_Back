@@ -3,6 +3,7 @@ package zerobase.tableNow.domain.reservation.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import zerobase.tableNow.components.MailComponents;
 import zerobase.tableNow.domain.constant.Status;
 import zerobase.tableNow.domain.reservation.dto.ApprovalDto;
 import zerobase.tableNow.domain.reservation.dto.ReservationDto;
@@ -31,6 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final ReservationMapper reservationMapper;
+    private final MailComponents mailComponents;
 
     /**
      * 예약 요청
@@ -68,6 +70,12 @@ public class ReservationServiceImpl implements ReservationService {
         // 예약 저장
         ReservationEntity reservationEntity = reservationMapper.toReserEntity(reservationDto, users, store);
         ReservationEntity saveEntity = reservationRepository.save(reservationEntity);
+
+        String email = users.getEmail();
+        String subject = "TableNow 예약 정보";
+        String text = mailComponents.getEmailReservation(reservationDto.getStore(), reservationDto.getReserDateTime());
+
+        boolean sendResult = mailComponents.sendMail(email, subject, text);
 
         return reservationMapper.toReserDto(saveEntity);
     }
