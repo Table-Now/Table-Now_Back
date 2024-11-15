@@ -192,6 +192,9 @@ public class UserServiceImpl implements UserService {
 
         UsersEntity users = optionalUsers.get();
 
+        List<EmailEntity> userEmail = emailRepository.findByUser(users);
+        emailRepository.deleteAll(userEmail);
+
         // 2. 해당 사용자의 모든 상점 조회 후 삭제
         List<StoreEntity> userStores = storeRepository.findByUser(users);
         storeRepository.deleteAll(userStores);
